@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('marca',30)->nullable();
             $table->string('modelo',50)->nullable();
             $table->string('serie',100)->nullable();
-            $table->intiger('activo',50)->nullable();
+            $table->integer('activo')->nullable();
             $table->string('area',100)->nullable();
             $table->string('ubicacion',100)->nullable();
-            $table->enum('estado',['Activo','Reparacion', 'Baja']);
+            $table->enum('estado',['Activo','Reparacion', 'Baja'])->default('Activo');
             $table->string('descripcion',100)->nullable();
-            $table->intiger('id_tipo');
+            $table->integer('id_tipo');
             $table->timestamps();
         });
     }

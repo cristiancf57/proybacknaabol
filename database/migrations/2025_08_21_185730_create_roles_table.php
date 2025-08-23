@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cargos',80);
             $table->string('abrebiado',10);
+            $table->string('area',40);
             $table->timestamps();
         });
     }

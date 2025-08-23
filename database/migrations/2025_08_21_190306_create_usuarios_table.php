@@ -16,9 +16,13 @@ return new class extends Migration
             $table->string('nombre',50);
             $table->string('apellido',50);
             $table->string('email',60)->nullable();
-            $table->integer('telefono',15);
+            $table->string('telefono',15)->nullable();
             $table->string('username',60);
-            $table->text('password');
+            $table->string('password');
+            
+            $table->unsignedBigInteger('rol_id');
+            $table->foreign('rol_id')->references('id')->on('roles');
+
             $table->timestamps();
         });
     }

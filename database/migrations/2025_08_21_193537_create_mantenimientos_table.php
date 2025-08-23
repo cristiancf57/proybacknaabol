@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('mantenimientos', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha');
+            $table->integer('activo_id')->nullable();
+            $table->integer('id_tecnico')->nullable();
+            $table->date('fecha_programada');
+            $table->date('fecha_realizada');
             $table->enum('tipo_mantenimiento',['preventivo','correctivo'])->nullable();
-            $table->string('descripcion',100)->nullable();
+            $table->string('resultados',100)->nullable();
             $table->string('foto_antes',200)->nullable();
             $table->string('foto_despues',200)->nullable();
-            $table->integer('responsable')->nullable();
+            $table->string('observaciones',100)->nullable();
             $table->timestamps();
         });
     }

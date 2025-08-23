@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('actas', function (Blueprint $table) {
             $table->id();
             $table->integer('codigo_acta');
-            $table->text('descripcion');
+            $table->string('descripcion');
             $table->string('encargado',60);
-            $table->integer('id_mantenimiento');
+            $table->integer('mantenimiento_id');
             $table->timestamps();
         });
     }
