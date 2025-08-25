@@ -15,8 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('foto')->nullable();
             $table->timestamp('fecha_hora')->nullable();
-            $table->integer('usuario_id');
-            $table->integer('reporte_id');
+
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('cascade');
+
+            $table->unsignedBigInteger('reporte_id');
+            $table->foreign('reporte_id')->references('id')->on('reportes')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

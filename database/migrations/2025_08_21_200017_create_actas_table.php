@@ -16,7 +16,10 @@ return new class extends Migration
             $table->integer('codigo_acta');
             $table->string('descripcion');
             $table->string('encargado',60);
-            $table->integer('mantenimiento_id');
+
+            $table->unsignedBigInteger('mantenimiento_id');
+            $table->foreign('mantenimiento_id')->references('id')->on('mantenimientos')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

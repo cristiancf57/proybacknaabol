@@ -22,7 +22,10 @@ return new class extends Migration
             $table->string('ubicacion',100)->nullable();
             $table->enum('estado',['Activo','Reparacion', 'Baja'])->default('Activo');
             $table->string('descripcion',100)->nullable();
-            $table->integer('id_tipo');
+
+            $table->unsignedBigInteger('tipo_id');
+            $table->foreign('tipo_id')->references('id')->on('tipos')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

@@ -16,9 +16,16 @@ return new class extends Migration
             $table->enum('tipo_movimiento',['prevecambio de ubicacion','asignacion','baja'])->nullable();
             $table->string('detalle',150)->nullable();
             $table->enum('estado',['operable','nuevo','baja'])->nullable();
-            $table->integer('usuario_id');
-            $table->integer('activo_id');
-            $table->integer('ubicacion_id');
+
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('cascade');
+
+            $table->unsignedBigInteger('activo_id');
+            $table->foreign('activo_id')->references('id')->on('activos')->onDelete('cascade');
+
+            $table->unsignedBigInteger('ubicacion_id');
+            $table->foreign('ubicacion_id')->references('id')->on('ubicaciones')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

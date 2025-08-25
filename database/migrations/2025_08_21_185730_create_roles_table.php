@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('cargos',80);
+            $table->string('cargo',80);
             $table->string('abrebiado',10);
             $table->string('area',40);
             $table->timestamps();

@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('componentes', function (Blueprint $table) {
             $table->id();
-            $table->integer('mantenimiento_id');
-            $table->integer('repuesto_id');
             $table->integer('cantidad');
             $table->date('fecha');
             $table->string('descripcion',150)->nullable();
+
+            $table->unsignedBigInteger('mantenimiento_id');
+            $table->foreign('mantenimiento_id')->references('id')->on('mantenimientos')->onDelete('cascade');
+
+            $table->unsignedBigInteger('repuesto_id');
+            $table->foreign('repuesto_id')->references('id')->on('repuestos')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
