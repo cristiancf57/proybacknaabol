@@ -719,14 +719,14 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                  <h5 class="card-title">Reportes <span>| Today</span></h5>
 
                   <table class="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
+                        <th scope="col">Detalle</th>
+                        <th scope="col">Reporte</th>
                         <th scope="col">Price</th>
                         <th scope="col">Status</th>
                       </tr>
@@ -793,47 +793,53 @@
                 </div>
 
                 <div class="card-body pb-0">
-                  <h5 class="card-title">Top Selling <span>| Today</span></h5>
+                  <h5 class="card-title">Reportes <span>| Hoy</span></h5>
 
                   <table class="table table-borderless">
                     <thead>
                       <tr>
-                        <th scope="col">Preview</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col">Revenue</th>
+                        <th scope="col">foto</th>
+                        <th scope="col">detalle</th>
+                        <th scope="col">area</th>
+                        <th scope="col">fecha</th>
+                        <th scope="col">estado</th>
+                        <th scope="col">persocal</th>
                       </tr>
                     </thead>
                     <tbody>
+                      @foreach ($reportes as $reporte)
                       <tr>
-                        <th scope="row"><a href="#"><img src="assets/img/product-1.jpg" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">Ut inventore ipsa voluptas nulla</a></td>
-                        <td>$64</td>
-                        <td class="fw-bold">124</td>
-                        <td>$5,828</td>
+                        <th scope="row"><a href="#"><img src="assets/img/componentes/{{$reporte->foto}}" alt=""></a></th>
+                        <td><a href="#" class="text-primary fw-bold">Ut {{$reporte->detalle}}</a></td>
+                        <td>{{$reporte->tipo_reporte}}</td>
+                        <td>{{$reporte->fecha_hora}}</td>
+                        {{-- <td>
+                            <span class="badge 
+                                {{ $reporte->estado === 'Nuevo' ? 'bg-danger' : 'bg-success' }}">
+                                {{ $reporte->estado }}
+                            </span>
+                        </td> --}}
+
+                        <td>
+                            @if($reporte->estado === 'nuevo')
+                                <span class="badge bg-danger">{{ $reporte->estado }}</span>
+                            @elseif($reporte->estado === 'culminado')
+                                <span class="badge bg-success">{{ $reporte->estado }}</span>
+                            @else
+                                <span class="badge bg-secondary">{{ $reporte->estado }}</span>
+                            @endif
+                        </td>
+                        
+                        <td>{{$reporte->personal}}</td>
                       </tr>
-                      <tr>
-                        <th scope="row"><a href="#"><img src="assets/img/product-2.jpg" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">Exercitationem similique doloremque</a></td>
-                        <td>$46</td>
-                        <td class="fw-bold">98</td>
-                        <td>$4,508</td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#"><img src="assets/img/product-3.jpg" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">Doloribus nisi exercitationem</a></td>
-                        <td>$59</td>
-                        <td class="fw-bold">74</td>
-                        <td>$4,366</td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>
-                        <td><a href="#" class="text-primary fw-bold">Officiis quaerat sint rerum error</a></td>
-                        <td>$32</td>
-                        <td class="fw-bold">63</td>
-                        <td>$2,016</td>
-                      </tr>
+                      @endforeach
+
+                      {{-- <tr>
+                        <td><span class="badge bg-warning">Pending</span></
+                        <td><span class="badge bg-success">Approved</span></
+                        <td><span class="badge bg-danger">Rejected</span></
+                      </tr> --}}
+
                       <tr>
                         <th scope="row"><a href="#"><img src="assets/img/product-5.jpg" alt=""></a></th>
                         <td><a href="#" class="text-primary fw-bold">Sit unde debitis delectus repellendus</a></td>

@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('activos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',80)->nullable();
+            $table->string('detalle',90)->nullable();
+            $table->integer('activo')->nullable();
             $table->string('marca',30)->nullable();
             $table->string('modelo',50)->nullable();
             $table->string('serie',100)->nullable();
-            $table->integer('activo')->nullable();
+            $table->string('color',60)->nullable();
             $table->string('area',100)->nullable();
+            $table->string('ip',15)->nullable();
             $table->string('ubicacion',100)->nullable();
-            $table->enum('estado',['Activo','Reparacion', 'Baja'])->default('Activo');
+            $table->enum('estado',['Operable','Reparacion', 'Baja'])->default('Activo');
             $table->string('descripcion',100)->nullable();
 
             $table->unsignedBigInteger('tipo_id');

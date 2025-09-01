@@ -11,7 +11,8 @@ class Activo extends Model
 {
     use HasFactory;
     protected $table = 'activos';
-    protected $fillable = ['nombre','marca','modelo','serie','activo','area','ubicacion','estado','descripcion','tipo_id'];
+    // protected $fillable = ['marca','modelo','serie','color','activo','area','ubicacion','estado','descripcion','tipo_id'];
+    protected $fillable = ['detalle','activo','marca','modelo','serie','color','area','ip','ubicacion','estado','descripcion','tipo_id'];
 
     public function tipo():BelongsTo{
         return $this->belongsTo(Tipo::class);

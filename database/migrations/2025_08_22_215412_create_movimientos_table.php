@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
-            $table->enum('tipo_movimiento',['prevecambio de ubicacion','asignacion','baja'])->nullable();
-            $table->string('detalle',150)->nullable();
+            $table->enum('tipo_movimiento',['cambio de ubicacion','asignacion','baja'])->nullable();
+            $table->string('descripcion',150)->nullable();
+            $table->string('origen',80)->nullable();
+            $table->string('destino',80)->nullable();
             $table->enum('estado',['operable','nuevo','baja'])->nullable();
 
             $table->unsignedBigInteger('usuario_id');
