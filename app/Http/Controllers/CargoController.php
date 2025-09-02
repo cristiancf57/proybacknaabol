@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rol;
+use App\Models\Cargo;
 use Illuminate\Http\Request;
 
 class RolController extends Controller
@@ -12,8 +12,8 @@ class RolController extends Controller
      */
     public function index()
     {
-        $roles = Rol::all();
-        return view('roles.index', ['roles' => $roles]);
+        $roles = Cargo::all();
+        return view('cargos.index', ['cargos' => $roles]);
     }
 
     /**
@@ -21,7 +21,7 @@ class RolController extends Controller
      */
     public function create()
     {
-        return view('roles.create');
+        return view('cargos.create');
     }
 
     /**
@@ -29,8 +29,8 @@ class RolController extends Controller
      */
     public function store(Request $request)
     {
-        $rol=new Rol();
-        $rol->cargo = $request->cargo;
+        $rol=new Cargo();
+        $rol->descripcion = $request->descripcion;
         $rol->abrebiado = $request->abrebiado;
         $rol->area = $request->area;
         $rol->save();
@@ -41,9 +41,9 @@ class RolController extends Controller
      */
     public function show(string $id)
     {
-        $rol = Rol::find($id);
+        $cargo = Cargo::find($id);
         // $rol = Rol::where('cargo', 'like', '%ar%')->get();
-        return view('rol.mostrar',['mascota' => $rol]);
+        return view('cargos.mostrar',['mascota' => $cargo]);
     }
 
     /**
@@ -51,8 +51,8 @@ class RolController extends Controller
      */
     public function edit(string $id)
     {
-        $rol = Rol::find($id);
-        return view('rol.edit',['rol'=>$rol]);
+        $cargo = Cargo::find($id);
+        return view('cargos.edit',['cargo'=>$cargo]);
     }
 
     /**
@@ -60,8 +60,8 @@ class RolController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $rol = Rol::find($id);
-        $rol->cargo = $request->cargo;
+        $rol = Cargo::find($id);
+        $rol->descripcion = $request->descripcion;
         $rol->abrebiado = $request->abrebiado;
         $rol->area = $request->area;
         $rol->save();
@@ -72,7 +72,7 @@ class RolController extends Controller
      */
     public function destroy(string $id)
     {
-        $rol = Rol::find($id);
+        $rol = Cargo::find($id);
         $rol->delete();
     }
 }

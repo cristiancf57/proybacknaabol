@@ -13,7 +13,7 @@ class MantenimientoController extends Controller
     public function index()
     {
         $mantenimientos = Mantenimiento::all();
-        return view('mantenimiento.index', ['mantenimientos'=>$mantenimientos]);
+        return view('mantenimientos.index', ['mantenimientos'=>$mantenimientos]);
     }
 
     /**
@@ -21,7 +21,7 @@ class MantenimientoController extends Controller
      */
     public function create()
     {
-        return view('mantenimiento.create');
+        return view('mantenimientos.create');
     }
 
     /**
@@ -48,7 +48,7 @@ class MantenimientoController extends Controller
     public function show(string $id)
     {
         $mantenimiento = Mantenimiento::find($id);
-        return view('mantenimiento.mostrar', ['mantenimiento'=>$mantenimiento]);
+        return view('mantenimientos.mostrar', ['mantenimiento'=>$mantenimiento]);
     }
 
     /**
@@ -57,7 +57,7 @@ class MantenimientoController extends Controller
     public function edit(string $id)
     {
         $mantenimiento = Mantenimiento::find($id);
-        return view('mantenimiento.edit', ['Mantenimiento'=>$mantenimiento]);
+        return view('mantenimientos.edit', ['Mantenimiento'=>$mantenimiento]);
     }
 
     /**

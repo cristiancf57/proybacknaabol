@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Activo;
+use App\Models\Cargo;
 use App\Models\Reporte;
-use App\Models\Rol;
 use App\Models\Tipo;
 use App\Models\User;
 use App\Models\Usuario;
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        Rol::factory(10)->create();
+        Cargo::factory(10)->create();
         Usuario::factory(20)->create();
         Tipo::factory(10)->create();
         Activo::factory(50)->create();

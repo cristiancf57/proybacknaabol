@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Rol>
  */
-class RolFactory extends Factory
+class CargoFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class RolFactory extends Factory
     public function definition(): array
     {
         return [
-            'cargo'=> $this->faker->name(),
+            'descripcion'=> $this->faker->name(),
             'abrebiado'=> $this->faker->text(5),
             'area'=> $this->faker->text(20)
         ];

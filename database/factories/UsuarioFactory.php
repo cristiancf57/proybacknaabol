@@ -23,7 +23,7 @@ class UsuarioFactory extends Factory
             'telefono'=> $this->faker->numberBetween(60000000, 79999999),
             'username'=> $this->faker->userName(),
             'password'=> $this->faker->password(),
-            'rol_id'=> $this->faker->numberBetween(1, 10) 
+            'cargo_id'=> $this->faker->numberBetween(1, 10) 
         ];
     }
 }

@@ -13,7 +13,7 @@ class ActivoController extends Controller
     public function index()
     {
         $activos = Activo::all();
-        return view('activo.intex', ['activos'=>$activos]);
+        return view('activos.intex', ['activos'=>$activos]);
     }
 
     /**
@@ -21,7 +21,7 @@ class ActivoController extends Controller
      */
     public function create()
     {
-        return view('activo.create');
+        return view('activos.create');
     }
 
     /**
@@ -51,7 +51,7 @@ class ActivoController extends Controller
     public function show(string $id)
     {
         $activo = Activo::find($id);
-        return view('activo.mostrar', ['activo'=>$activo]);
+        return view('activos.mostrar', ['activo'=>$activo]);
     }
 
     /**
@@ -60,7 +60,7 @@ class ActivoController extends Controller
     public function edit(string $id)
     {
         $activo = Activo::find($id);
-        return view('activo.edit', ['activo'=>$activo]);
+        return view('activos.edit', ['activo'=>$activo]);
     }
 
     /**

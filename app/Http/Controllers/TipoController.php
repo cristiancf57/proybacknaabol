@@ -13,7 +13,7 @@ class TipoController extends Controller
     public function index()
     {
         $tipos = Tipo::all();
-        return view('tipo.index', ['tipos'=>$tipos]);
+        return view('tipos.index', ['tipos'=>$tipos]);
     }
 
     /**
@@ -21,7 +21,7 @@ class TipoController extends Controller
      */
     public function create()
     {
-        return view('tipo.create');
+        return view('tipos.create');
     }
 
     /**
@@ -41,7 +41,7 @@ class TipoController extends Controller
     public function show(string $id)
     {
         $tipo = Tipo::find($id);
-        return view('tipo.mostrar', ['tipo'=>$tipo]);
+        return view('tipos.mostrar', ['tipo'=>$tipo]);
     }
 
     /**
@@ -50,7 +50,7 @@ class TipoController extends Controller
     public function edit(string $id)
     {
         $tipo = Tipo::find($id);
-        return view('tipo.edit', ['tipo'=>$tipo]);
+        return view('tipos.edit', ['tipo'=>$tipo]);
     }
 
     /**

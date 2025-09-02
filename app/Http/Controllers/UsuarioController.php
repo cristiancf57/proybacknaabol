@@ -46,7 +46,7 @@ class UsuarioController extends Controller
     public function show(string $id)
     {
         $usuario = Usuario::find($id);
-        return view('usuario.mostrar',['usuario'=> $usuario]);
+        return view('usuarios.mostrar',['usuario'=> $usuario]);
     }
 
     /**
@@ -55,7 +55,7 @@ class UsuarioController extends Controller
     public function edit(string $id)
     {
         $usuario = Usuario::find($id);
-        return view('usuario.edit',['usuario'=>$usuario]);
+        return view('usuarios.edit',['usuario'=>$usuario]);
     }
 
     /**
@@ -70,7 +70,7 @@ class UsuarioController extends Controller
         $usuario->telefono = $request->telefono;
         $usuario->username = $request->username;
         $usuario->password = $request->password;
-        $usuario->rol_id = $request->rol_id;
+        $usuario->cargo_id = $request->cargo_id;
         $usuario->save();
     }
 

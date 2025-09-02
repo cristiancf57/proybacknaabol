@@ -21,7 +21,7 @@ class ActaController extends Controller
      */
     public function create()
     {
-        return view('acta.create');
+        return view('actas.create');
     }
 
     /**
@@ -43,7 +43,7 @@ class ActaController extends Controller
     public function show(string $id)
     {
         $acta = Acta::find($id);
-        return view('acta.mostrar', ['acta'=>$acta]);
+        return view('actas.mostrar', ['acta'=>$acta]);
     }
 
     /**
@@ -52,7 +52,7 @@ class ActaController extends Controller
     public function edit(string $id)
     {
         $acta =Acta::find($id);
-        return view('acta.edit', ['acta'=>$acta]);
+        return view('actas.edit', ['acta'=>$acta]);
     }
 
     /**

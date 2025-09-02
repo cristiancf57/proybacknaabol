@@ -11,10 +11,10 @@ class Usuario extends Model
 {
     use HasFactory;
     protected $table = 'usuarios';
-    protected $fillable = ['nombre','apellido','email','telefono','username','password','rol_id'];
+    protected $fillable = ['nombre','apellido','email','telefono','username','password','cargo_id'];
 
-    public function rol():BelongsTo{
-        return $this->belongsTo(Rol::class);
+    public function cargo():BelongsTo{
+        return $this->belongsTo(Cargo::class);
     }
 
     public function mantenimientos():HasMany{
