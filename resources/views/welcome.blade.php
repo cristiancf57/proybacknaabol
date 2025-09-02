@@ -6,8 +6,8 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Favicons -->
-  <link rel="icon" type="image/x-icon" href="./assets/img/fondos/NaabolLogo.png">
-  <link href="./assets/img/fondos/NaabolLogo.png" rel="apple-touch-icon">
+  <link rel="icon" type="image/x-icon" href="./assets/img/fondos/IconNaabol.png">
+  <link href="./assets/img/fondos/IconNaabol.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -1153,7 +1153,7 @@
       &copy; Copyright <strong><span>sistemas</span></strong>. All Rights Reserved
     </div>
     <div class="credits">
-      Designed by <a href="https://naabol.com/">Naabol</a> 2025
+      Designed by <a href="https://naabol.gob.bo/">Naabol</a> 2025
     </div>
   </footer><!-- End Footer -->
 
