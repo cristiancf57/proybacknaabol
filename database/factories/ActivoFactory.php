@@ -19,7 +19,7 @@ class ActivoFactory extends Factory
     {
         return [
             'detalle'=> $this->faker->text(50),
-            'activo'=> $this->faker->numberBetween(20000000, 99999999),
+            'codigo'=> $this->faker->numberBetween(20000000, 99999999),
             'marca'=> $this->faker->words(2, true),
             'modelo'=> $this->faker->text(15),
             'serie'=> $this->faker->numberBetween(100, 10000),
@@ -28,6 +28,7 @@ class ActivoFactory extends Factory
             'ip' => $this->faker->ipv4,
             'ubicacion'=> $this->faker->text(15),
             'estado'=> $this->faker->randomElement(['Operable','Reparacion','Baja']),
+            'fecha' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'descripcion'=> $this->faker->text(30),
             'tipo_id'=> $this->faker->numberBetween(1,10)
         ];

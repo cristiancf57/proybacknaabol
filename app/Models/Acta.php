@@ -10,9 +10,9 @@ class Acta extends Model
 {
     use HasFactory;
     protected $table = 'actas';
-    protected $fillable = ['codigo_acta','descripcion','encargado','mantenimiento_id'];
+    protected $fillable = ['descripcion','encargado','tecnico','supervisor','observaciones','actividad_id'];
 
-    public function mantenimiento():HasOne{
-        return $this->hasOne(Mantenimiento::class);
+    public function actividad():HasOne{
+        return $this->hasOne(Actividad::class);
     }
 }

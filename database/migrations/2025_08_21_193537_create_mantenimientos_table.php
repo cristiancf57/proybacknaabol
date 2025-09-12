@@ -13,19 +13,12 @@ return new class extends Migration
     {
         Schema::create('mantenimientos', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_programada');
-            $table->date('fecha_realizada');
-            $table->enum('tipo_mantenimiento',['preventivo','correctivo'])->nullable();
-            $table->string('resultados',100)->nullable();
-            $table->string('foto_antes',200)->nullable();
-            $table->string('foto_despues',200)->nullable();
+            $table->string('estado',15)->nullable();
+            $table->date('fecha')->nullable();
             $table->string('observaciones',100)->nullable();
 
             $table->unsignedBigInteger('activo_id');
             $table->foreign('activo_id')->references('id')->on('activos')->onDelete('cascade');
-
-            $table->unsignedBigInteger('tecnico_id');
-            $table->foreign('tecnico_id')->references('id')->on('usuarios')->onDelete('cascade');
 
             $table->timestamps();
         });

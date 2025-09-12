@@ -12,21 +12,13 @@ class Mantenimiento extends Model
 {
     use HasFactory;
     protected $table = 'mantenimientos';
-    protected $fillable = ['fecha_programada','fecha_realizada','tipo_mantenimiento','resultados','foto_antes','foto_despues','observaciones','activo_id','tecnico_id'];
-
-    public function acta():HasOne{
-        return $this->hasOne(Acta::class);
-    }
-
-    public function usuario():BelongsTo{
-        return $this->belongsTo(Usuario::class);
-    }
+    protected $fillable = ['estado','fecha','observaciones','activo_id'];
 
     public function activo():BelongsTo{
         return $this->belongsTo(Activo::class);
     }
 
-    public function componentes():HasMany{
-        return $this->hasMany(Componente::class);
+    public function actividades():HasMany{
+        return $this->hasMany(Actividad::class);
     }
 }

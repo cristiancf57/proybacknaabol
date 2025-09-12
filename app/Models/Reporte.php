@@ -10,7 +10,7 @@ class Reporte extends Model
 {
     use HasFactory;
     protected $table = 'reportes';
-    protected $fillable = ['detalle','tipo_reporte','foto','fecha_hora','estado','personal'];
+    protected $fillable = ['detalle','tipo_reporte','fecha','hora','estado','personal'];
 
     public function actareportes():HasOne{
         return $this->hasOne(Actareporte::class);

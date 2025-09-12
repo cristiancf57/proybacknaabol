@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('detalle',150)->nullable();
             $table->enum('tipo_reporte',['electronica','cns','sistemas'])->nullable();
-            $table->string('foto')->nullable();
-            $table->timestamp('fecha_hora');
+            $table->date('fecha')->nullable();
+            $table->time('hora')->nullable();
             $table->enum('estado',['nuevo','culminado'])->nullable();
             $table->string('personal')->nullable();
             $table->timestamps();

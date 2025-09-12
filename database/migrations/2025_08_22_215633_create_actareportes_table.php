@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('actareportes', function (Blueprint $table) {
             $table->id();
             $table->string('foto')->nullable();
-            $table->timestamp('fecha_hora')->nullable();
+            $table->date('fecha')->nullable();
+            $table->time('hora')->nullable();
+            $table->string('descripcion',200)->nullable();
 
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('cascade');

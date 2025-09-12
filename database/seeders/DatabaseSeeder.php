@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         Cargo::factory(10)->create();
-        Usuario::factory(20)->create();
+        // Usuario::factory(20)->create();
+        User::factory(20)->create();
         Tipo::factory(10)->create();
         Activo::factory(50)->create();
         Reporte::factory(20)->create();

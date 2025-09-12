@@ -17,8 +17,8 @@ class TipoFactory extends Factory
     public function definition(): array
     {
         return [
-            'descripcion'=> $this->faker->name(),
-            'observaciones'=> $this->faker->text(80)
+            'detalle'=> $this->faker->name(),
+            'descripcion'=> $this->faker->text(80)
         ];
     }
 }

@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tipo;
+use App\Models\Reporte;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TipoController extends Controller
+class ReporteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $tipos = Tipo::all();
-        // return view('tipos.index', ['tipos'=>$tipos]);
-        if ($tipos->isEmpty()){
+        $reportes = Reporte::all();
+        if ($reportes->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($tipos);
+        return response()->json($reportes);
+        // return view('reportes.index',['reportes'=>$reportes]);
     }
 
     /**
@@ -29,7 +30,7 @@ class TipoController extends Controller
      */
     public function create()
     {
-        return view('tipos.create');
+        return view('reportes.create');
     }
 
     /**
@@ -39,7 +40,9 @@ class TipoController extends Controller
     {
         $validator = validator($request->all(),[
             'detalle' => 'required',
-            'descripcion' => 'required'
+            'tipo_reporte' => 'required',
+            'estado' => 'required',
+            'personal' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -51,12 +54,16 @@ class TipoController extends Controller
             return response()->json($data, 400);
         }
 
-        $tipo = Tipo::create([
+        $actividad = Reporte::create([
             'detalle' => $request->detalle,
-            'descripcion' => $request->descripcion
+            'tipo_reporte' => $request->tipo_reporte,
+            'fecha' => Carbon::now('America/La_Paz')->toDateString(),  // "2025-08-29"
+            'hora'  => Carbon::now('America/La_Paz')->toTimeString(),  // "15:12:00"
+            'estado' => $request->estado,
+            'personal' => $request->personal
         ]);
         
-        if (!$tipo){
+        if (!$actividad){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
@@ -65,7 +72,7 @@ class TipoController extends Controller
         }
 
         $data = [
-            'usuario' => $tipo,
+            'actividad' => $actividad,
             'status' =>201
         ];
         return response()->json($data, 201);
@@ -76,9 +83,9 @@ class TipoController extends Controller
      */
     public function show(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.mostrar', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $reporte = Reporte::find($id);
+        return response()->json($reporte);
+        // return view('reportes.mostrar',['reportes'=>$reporte]);
     }
 
     /**
@@ -86,9 +93,9 @@ class TipoController extends Controller
      */
     public function edit(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.edit', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $reporte = Reporte::find($id);
+        return response()->json($reporte);
+        // return view('reportes.edit',['reportes'=>$reporte]);
     }
 
     /**
@@ -96,36 +103,27 @@ class TipoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
+        $reporte = Reporte::find($id);
+        if (!$reporte) {
             $data = [
-                'message' => 'dato no encontrado',
+                'message' => 'reporte no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
 
-        $validator = validator($request->all(),[
-            'detalle' => 'required',
-            'descripcion' => 'required'
-        ]);
-
-        if ($validator->fails()){
-            $data = [
-                'mesaje'=> 'error en la validacion de los datos',
-                'error'=> $validator->errors(),
-                'status'=> 400
-            ];
-            return response()->json($data, 400);
-        }
-        
-        $tipo->detalle = $request->detalle;
-        $tipo->descripcion = $request->descripcoin;
-        $tipo->save();
+        $reporte->detalle = $request->detalle;
+        $reporte->tipo_reporte = $request->tipo_reporte;
+        $reporte->foto = $request->foto;
+        $reporte->fecha = Carbon::now()->toDateString();  // "2025-08-29"
+        $reporte->hora = Carbon::now()->toTimeString();  // "15:12:00"
+        $reporte->estado = $request->estado;
+        $reporte->personal = $request->personal;
+        $reporte->save();
 
         $data = [
-            'message'=> 'dato actualizado',
-            'tipo' => $tipo,
+            'message'=> 'reporte actualizado',
+            'reporte' => $reporte,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -136,19 +134,19 @@ class TipoController extends Controller
      */
     public function destroy(string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
+        $reporte = Reporte::find($id);
+        if (!$reporte) {
             $data = [
-                'message' => 'dato no encontrado',
+                'message' => 'reporte no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
 
-        $tipo->delete();
+        $reporte->delete();
 
         $data = [
-            'message' => 'dato eliminado',
+            'message' => 'reporte eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

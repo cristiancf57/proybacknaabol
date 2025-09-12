@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mantenimiento;
+use App\Models\Componente;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class MantenimientoController extends Controller
+class ComponenteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $mantenimientos = Mantenimiento::all();
-        if ($mantenimientos->isEmpty()){
+        $componentes = Componente::all();
+        if ($componentes->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($mantenimientos);
-        // return view('mantenimientos.index', ['mantenimientos'=>$mantenimientos]);
+        return response()->json($componentes);
+        // return view('componentes.index', ['componentes'=>$componentes]);
     }
 
     /**
@@ -30,16 +30,19 @@ class MantenimientoController extends Controller
      */
     public function create()
     {
-        return view('mantenimientos.create');
+        return view('componentes.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   $validator = validator($request->all(),[
-            'estado' => 'required',
-            'activo_id' => 'required'
+    {
+        $validator = validator($request->all(),[
+            'cantidad' => 'required',
+            'descripcion' => 'required',
+            'mantenimiento_id' => 'required',
+            'repuesto_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -50,14 +53,16 @@ class MantenimientoController extends Controller
             ];
             return response()->json($data, 400);
         }
-
-        $mantenimiento = Mantenimiento::create([
-            'estado' => $request->estado,
+        
+        $componente = Componente::create([
+            'cantidad' => $request->cantidad,
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),
-            'activo_id' => $request->activo_id
+            'descripcion' => $request->descripcion,
+            'mantenimiento_id' => $request->mantenimiento_id,
+            'repuesto_id' => $request->repuesto_id
         ]);
         
-        if (!$mantenimiento){
+        if (!$componente){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
@@ -66,7 +71,7 @@ class MantenimientoController extends Controller
         }
 
         $data = [
-            'usuario' => $mantenimiento,
+            'componente' => $componente,
             'status' =>201
         ];
         return response()->json($data, 201);
@@ -77,9 +82,9 @@ class MantenimientoController extends Controller
      */
     public function show(string $id)
     {
-        $mantenimiento = Mantenimiento::find($id);
-        // return view('mantenimientos.mostrar', ['mantenimiento'=>$mantenimiento]);
-        return response()->json($mantenimiento);
+        $componente = Componente::find($id);
+        return response()->json($componente);
+        // return view('componentes.mostrar', ['componente'=>$componente]);
     }
 
     /**
@@ -87,9 +92,9 @@ class MantenimientoController extends Controller
      */
     public function edit(string $id)
     {
-        $mantenimiento = Mantenimiento::find($id);
-        // return view('mantenimientos.edit', ['Mantenimiento'=>$mantenimiento]);
-        return response()->json($mantenimiento);
+        $componente = Componente::find($id);
+        return response()->json($componente);
+        // return view('componentes.mostrar', ['componente'=>$componente]);
     }
 
     /**
@@ -97,19 +102,20 @@ class MantenimientoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $mantenimiento = Mantenimiento::find($id);
-        if (!$mantenimiento) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'mantenimiento no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
 
         $validator = validator($request->all(),[
-            'estado' => 'required',
-            'observaciones' => 'required',
-            'activo_id' => 'required'
+            'cantidad' => 'required',
+            'descripcion' => 'required',
+            'mantenimiento_id' => 'required',
+            'repuesto_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -120,16 +126,16 @@ class MantenimientoController extends Controller
             ];
             return response()->json($data, 400);
         }
-
-        $mantenimiento->estado = $request->estado;
-        $mantenimiento->fecha = $request->fecha;
-        $mantenimiento->observaciones = $request->observaciones;
-        $mantenimiento->activo_id = $request->activo_id;
-        $mantenimiento->save();
+        $componente->cantadad = $request->cantadad;
+        $componente->fecha = $request->fecha;
+        $componente->descripcion = $request->descripcion;
+        $componente->mantenimiento_id = $request->mantenimiento_id;
+        $componente->repuesto_id = $request->repuesto_id;
+        $componente->save();
 
         $data = [
-            'message'=> 'mantenimiento actualizado',
-            'mantenimiento' => $mantenimiento,
+            'message'=> 'componente actualizado',
+            'componente' => $componente,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -139,36 +145,40 @@ class MantenimientoController extends Controller
      * Update the specified resource in storage.
      */
     public function updatePartial(Request $request, string $id) {
-        $mantenimiento = Mantenimiento::find($id);
-        if (!$mantenimiento) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'registro de mantenimiento no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
+        
+        if ($request->has('cantidad')){
+            $componente->cantidad = $request->cantidad;
+        }
 
-        if ($request->has('estado')){
-            $mantenimiento->estado = $request->estado;
-        }
-        
         if ($request->has('fecha')){
-            $mantenimiento->fecha = $request->fecha;
+            $componente->fecha = $request->fecha;
         }
         
-        if ($request->has('observaciones')){
-            $mantenimiento->observaciones = $request->observaciones;
+        if ($request->has('descripcion')){
+            $componente->descripcion = $request->descripcion;
         }
         
-        if ($request->has('activo_id')){
-            $mantenimiento->activo_id = $request->activo_id;
+        if ($request->has('mantenimiento_id')){
+            $componente->mantenimiento_id = $request->mantenimiento_id;
         }
         
-        $mantenimiento->save();
+        if ($request->has('repuesto_id')){
+            $componente->repuesto_id = $request->repuesto_id;
+        }
+        
+        $componente->save();
 
         $data = [
-            'message'=> 'mantenimiento actualizado',
-            'mantenimiento' => $mantenimiento,
+            'message'=> 'componente actualizado',
+            'componente' => $componente,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -179,20 +189,18 @@ class MantenimientoController extends Controller
      */
     public function destroy(string $id)
     {
-        $mantenimiento = Mantenimiento::find($id);
-
-        if (!$mantenimiento) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'mantenimiento no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-
-        $mantenimiento->delete();
-
+        $componente->delete();
+        
         $data = [
-            'message' => 'mantenimiento eliminado',
+            'message' => 'componente eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

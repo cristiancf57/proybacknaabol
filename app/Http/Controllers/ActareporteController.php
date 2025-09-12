@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Acta;
+use App\Models\Actareporte;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class ActaController extends Controller
+class ActareporteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $actas = Acta::all();
-        if ($actas->isEmpty()){
+        $actasr = Actareporte::all();
+        if ($actasr->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($actas);
-        // return response()->json($actas,200);
-        // return view('actas.index',['actas'=>$actas]);
+        return response()->json($actasr);
+        // return view('actareporte.index',['reportes'=>$actasr]);
     }
 
     /**
@@ -30,7 +30,7 @@ class ActaController extends Controller
      */
     public function create()
     {
-        return view('actas.create');
+        return view('actareporte.create');
     }
 
     /**
@@ -40,7 +40,8 @@ class ActaController extends Controller
     {
         $validator = validator($request->all(),[
             'descripcion' => 'required',
-            'actividad_id' => 'required'
+            'usuario_id' => 'required',
+            'reporte_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -52,16 +53,16 @@ class ActaController extends Controller
             return response()->json($data, 400);
         }
 
-        $acta = Acta::create([
+        $actar = Actareporte::create([
+            'foto' => $request->foto ?? 'default.jpg',
+            'fecha' => Carbon::now()->toDateString(),   // "2025-08-29"
+            'hora'  => Carbon::now()->toTimeString(),   // "15:12:00"
             'descripcion' => $request->descripcion,
-            'encargado' => $request->encargado,
-            'tecnico' => $request->tecnico,
-            'supervisor' => $request->supervisor,
-            'observaciones' => $request->observaciones,
-            'actividad_id' => $request->actividad_id
+            'usuario_id' => $request->usuario_id,
+            'reporte_id' => $request->reporte_id
         ]);
 
-        if (!$acta){
+        if (!$actar){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
@@ -69,7 +70,7 @@ class ActaController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'usuario' => $acta,
+            'usuario' => $actar,
             'status' =>201
         ];
         return response()->json($data, 201);
@@ -80,8 +81,9 @@ class ActaController extends Controller
      */
     public function show(string $id)
     {
-        $acta = Acta::find($id);
-        return view('actas.mostrar', ['acta'=>$acta]);
+        $actar = Actareporte::find($id);
+        return response()->json($actar);
+        // return view('actareporte.mostrar',['reportes'=>$actar]);
     }
 
     /**
@@ -89,8 +91,9 @@ class ActaController extends Controller
      */
     public function edit(string $id)
     {
-        $acta =Acta::find($id);
-        return view('actas.edit', ['acta'=>$acta]);
+        $actar = Actareporte::find($id);
+        return response()->json($actar);
+        // return view('actareporte.edit',['reportes'=>$actar]);
     }
 
     /**
@@ -98,17 +101,19 @@ class ActaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $acta = Acta::find($id);
-        if (!$acta) {
+        $actar = Actareporte::find($id);
+        if (!$actar) {
             $data = [
-                'message' => 'Usuario no encontrado',
+                'message' => 'acta de reporte no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
+
         $validator = validator($request->all(),[
             'descripcion' => 'required',
-            'actividad_id' => 'required'
+            'usuario_id' => 'required',
+            'reporte_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -119,65 +124,58 @@ class ActaController extends Controller
             ];
             return response()->json($data, 400);
         }
-        
-        $acta->descripcion = $request->descripcion;
-        $acta->encargado = $request->encargado;
-        $acta->tecnico = $request->tecnico;
-        $acta->supervisor = $request->supervisor;
-        $acta->observaciones = $request->observaciones;
-        $acta->actividad_id = $request->actividad_id;
-        $acta->save();
 
-        $data = [
-            'message'=> 'acta actualizado',
-            'acta' => $acta,
-            'status' =>200
-        ];
-        return response()->json($data, 200);
+        $actar->foto = $request->foto ?? 'default.jpg';
+        $actar->fecha= Carbon::now()->toDateString();   // "2025-08-29"
+        $actar->hora = Carbon::now()->toTimeString();   // "15:12:00"
+        $actar->descripcion = $request->descripcion;
+        $actar->usuario_id = $request->usuario_id;
+        $actar->reporte_id = $request->reporte_id;
+        $actar->save();
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function updatePartial(Request $request, string $id) {
-        $acta = Acta::find($id);
-        if (!$acta) {
+        $actar = Actareporte::find($id);
+        if (!$actar) {
             $data = [
-                'message' => 'acta no encontrado',
+                'message' => 'acta de reporte no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
         
-        if ($request->has('descripcion')){
-            $acta->descripcion = $request->descripcion;
-        }
-        
-        if ($request->has('encargado')){
-            $acta->encargado = $request->encargado;
-        }
-        
-        if ($request->has('tecnico')){
-            $acta->tecnico = $request->tecnico;
-        }
-        
-        if ($request->has('supervisor')){
-            $acta->supervisor = $request->supervisor;
+        if ($request->has('foto')){
+            $actar->foto = $request->foto;
         }
 
+        if ($request->has('fecha')){
+            $actar->fecha = $request->fecha;
+        }
+
+        if ($request->has('hora')){
+            $actar->hora = $request->hora;
+        }
+        
         if ($request->has('descripcion')){
-            $acta->descripcion = $request->descripcion;
+            $actar->descripcion = $request->descripcion;
         }
         
-        if ($request->has('actividad_id')){
-            $acta->actividad_id = $request->actividad_id;
+        if ($request->has('usuario_id')){
+            $actar->usuario_id = $request->usuario_id;
         }
         
-        $acta->save();
+        if ($request->has('reporte_id')){
+            $actar->reporte_id = $request->reporte_id;
+        }
+        
+        $actar->save();
 
         $data = [
-            'message'=> 'Acta actualizado',
-            'acta' => $acta,
+            'message'=> 'acta de reporte actualizado',
+            'acta' => $actar,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -188,19 +186,19 @@ class ActaController extends Controller
      */
     public function destroy(string $id)
     {
-        $acta = Acta::find($id);
-        if (!$acta) {
+        $actar = Actareporte::find($id);
+        if (!$actar) {
             $data = [
-                'message' => 'acta no encontrado',
+                'message' => 'acta de reporte no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
 
-        $acta->delete();
+        $actar->delete();
 
         $data = [
-            'message' => 'acta eliminado',
+            'message' => 'acta de reporte eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

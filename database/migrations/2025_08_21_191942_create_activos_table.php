@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('activos', function (Blueprint $table) {
             $table->id();
             $table->string('detalle',90)->nullable();
-            $table->integer('activo')->nullable();
+            $table->integer('codigo')->nullable();
             $table->string('marca',30)->nullable();
             $table->string('modelo',50)->nullable();
             $table->string('serie',100)->nullable();
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('ip',15)->nullable();
             $table->string('ubicacion',100)->nullable();
             $table->enum('estado',['Operable','Reparacion', 'Baja'])->default('Activo');
+            $table->date('fecha');
             $table->string('descripcion',100)->nullable();
 
             $table->unsignedBigInteger('tipo_id');

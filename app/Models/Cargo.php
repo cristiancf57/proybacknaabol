@@ -12,8 +12,8 @@ class Cargo extends Model
     protected $table = 'cargos';
     protected $fillable = ['descripcion','abrebiado','area'];
 
-    public function usuarios():HasMany{
-        return $this->hasMany(Usuario::class);
+    public function users():HasMany{
+        return $this->hasMany(User::class);
     }
 }
 

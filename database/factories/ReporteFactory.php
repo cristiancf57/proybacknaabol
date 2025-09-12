@@ -19,8 +19,9 @@ class ReporteFactory extends Factory
         return [
             'detalle'=> $this->faker->text(50),
             'tipo_reporte'=> $this->faker->randomElement(['electronica','cns','sistemas']),
-            'foto'=> $this->faker->randomElement(['camara.jpg','cpudell.jpg','dell.jpg','impresora.jpg','lexmark.jpg','lg.jpg','monitor.jpg','scanner.webp','teclast.jpg']),
-            'fecha_hora'=> $this->faker->dateTimeBetween('-1 years', 'now'),
+            // 'foto'=> $this->faker->randomElement(['camara.jpg','cpudell.jpg','dell.jpg','impresora.jpg','lexmark.jpg','lg.jpg','monitor.jpg','scanner.webp','teclast.jpg']),
+            'fecha' => $this->faker->dateTimeBetween('-1 years', 'now')->format('Y-m-d'),
+            'hora'  => $this->faker->dateTimeBetween('-1 years', 'now')->format('H:i:s'),
             'estado'=> $this->faker->randomElement(['nuevo','culminado']),
             'personal'=> $this->faker->name()
         ];

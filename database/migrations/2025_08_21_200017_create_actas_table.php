@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('actas', function (Blueprint $table) {
             $table->id();
-            $table->integer('codigo_acta');
             $table->string('descripcion');
-            $table->string('encargado',60);
+            $table->string('encargado',60)->nullable();
+            $table->string('tecnico',60)->nullable();
+            $table->string('supervisor',60)->nullable();
+            $table->string('observaciones',200)->nullable();
 
-            $table->unsignedBigInteger('mantenimiento_id');
-            $table->foreign('mantenimiento_id')->references('id')->on('mantenimientos')->onDelete('cascade');
+            $table->unsignedBigInteger('actividad_id');
+            $table->foreign('actividad_id')->references('id')->on('actividades')->onDelete('cascade');
 
             $table->timestamps();
         });

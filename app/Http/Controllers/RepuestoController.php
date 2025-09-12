@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tipo;
+use App\Models\Repuesto;
 use Illuminate\Http\Request;
 
-class TipoController extends Controller
+class RepuestoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $tipos = Tipo::all();
-        // return view('tipos.index', ['tipos'=>$tipos]);
-        if ($tipos->isEmpty()){
+        $repuestos = Repuesto::all();
+        if ($repuestos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($tipos);
+        return response()->json($repuestos);
+        // return view('repuestos.index',['repuestos'=>$repuestos]);
     }
 
     /**
@@ -29,7 +29,7 @@ class TipoController extends Controller
      */
     public function create()
     {
-        return view('tipos.create');
+        return view('repuestos.create');
     }
 
     /**
@@ -38,8 +38,10 @@ class TipoController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'detalle' => 'required',
-            'descripcion' => 'required'
+            'nombre' => 'required',
+            'marca' => 'required',
+            'descripcion' => 'required',
+            'stock' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -51,12 +53,15 @@ class TipoController extends Controller
             return response()->json($data, 400);
         }
 
-        $tipo = Tipo::create([
-            'detalle' => $request->detalle,
-            'descripcion' => $request->descripcion
+        $repuesto = Repuesto::create([
+            'nombre' => $request->nombre,
+            'marca' => $request->marca,
+            'modelo' => $request->modelo,
+            'descripcion' => $request->descripcion,
+            'stock' => $request->stock
         ]);
-        
-        if (!$tipo){
+
+        if (!$repuesto){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
@@ -65,7 +70,7 @@ class TipoController extends Controller
         }
 
         $data = [
-            'usuario' => $tipo,
+            'repuesto' => $repuesto,
             'status' =>201
         ];
         return response()->json($data, 201);
@@ -76,9 +81,9 @@ class TipoController extends Controller
      */
     public function show(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.mostrar', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $repuesto = Repuesto::find($id);
+        return response()->json($repuesto);
+        // return view('repuestos.mostrar', ['repuesto'=>$repuesto]);
     }
 
     /**
@@ -86,9 +91,9 @@ class TipoController extends Controller
      */
     public function edit(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.edit', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $repuesto = Repuesto::find($id);
+        return response()->json($repuesto);
+        // return view('repuesto.edit', ['repuesto'=>$repuesto]);
     }
 
     /**
@@ -96,18 +101,20 @@ class TipoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
+        $repuesto = Repuesto::find($id);
+        if (!$repuesto) {
             $data = [
-                'message' => 'dato no encontrado',
+                'message' => 'accesorio no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
 
         $validator = validator($request->all(),[
-            'detalle' => 'required',
-            'descripcion' => 'required'
+            'nombre' => 'required',
+            'marca' => 'required',
+            'descripcion' => 'required',
+            'stock' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -118,14 +125,17 @@ class TipoController extends Controller
             ];
             return response()->json($data, 400);
         }
-        
-        $tipo->detalle = $request->detalle;
-        $tipo->descripcion = $request->descripcoin;
-        $tipo->save();
+
+        $repuesto->nombre = $request->nombre;
+        $repuesto->marca = $request->marca;
+        $repuesto->modelo = $request->modelo;
+        $repuesto->descripcion = $request->descripcion;
+        $repuesto->stock = $request->stock;
+        $repuesto->save();
 
         $data = [
-            'message'=> 'dato actualizado',
-            'tipo' => $tipo,
+            'message'=> 'repuesto actualizado',
+            'repuesto' => $repuesto,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -136,19 +146,17 @@ class TipoController extends Controller
      */
     public function destroy(string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
+        $repuesto = Repuesto::find($id);
+        if (!$repuesto) {
             $data = [
-                'message' => 'dato no encontrado',
+                'message' => 'repuesto no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-
-        $tipo->delete();
-
+        $repuesto->delete();
         $data = [
-            'message' => 'dato eliminado',
+            'message' => 'repuesto eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

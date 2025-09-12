@@ -10,7 +10,7 @@ class Tipo extends Model
 {
     use HasFactory;
     protected $table = 'tipos';
-    protected $fillable = ['descripion','observaciones'];
+    protected $fillable = ['detalle','descripion'];
 
     public function activos():HasMany{
         return $this->hasMany(Activo::class);

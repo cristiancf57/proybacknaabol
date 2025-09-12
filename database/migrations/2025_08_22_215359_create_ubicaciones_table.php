@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ubicaciones', function (Blueprint $table) {
             $table->id();
             $table->string('lugar',100)->nullable();
-            $table->string('detalle',100)->nullable();
+            $table->string('detalle',200)->nullable();
             $table->timestamps();
         });
     }
