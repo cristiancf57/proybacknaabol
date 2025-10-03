@@ -10,7 +10,7 @@ class Ubicacion extends Model
 {
     use HasFactory;
     protected $table = 'ubicaciones';
-    protected $fillable = ['lugar','detalle'];
+    protected $fillable = ['area','ubicacion','especificacion'];
 
     public function movimientos():HasMany{
         return $this->hasMany(Movimiento::class);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Acta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ActaController extends Controller
@@ -53,10 +54,12 @@ class ActaController extends Controller
         }
 
         $acta = Acta::create([
+            'fecha' => Carbon::now('America/La_Paz')->toDateString(),  // "2025-08-29"
             'descripcion' => $request->descripcion,
             'encargado' => $request->encargado,
             'tecnico' => $request->tecnico,
             'supervisor' => $request->supervisor,
+            'estado' => $request->estado,
             'observaciones' => $request->observaciones,
             'actividad_id' => $request->actividad_id
         ]);
@@ -120,10 +123,12 @@ class ActaController extends Controller
             return response()->json($data, 400);
         }
         
+        $acta->descripcion =  Carbon::now('America/La_Paz')->toDateString();  // "2025-08-29"
         $acta->descripcion = $request->descripcion;
         $acta->encargado = $request->encargado;
         $acta->tecnico = $request->tecnico;
         $acta->supervisor = $request->supervisor;
+        $acta->estado = $request->estado;
         $acta->observaciones = $request->observaciones;
         $acta->actividad_id = $request->actividad_id;
         $acta->save();
@@ -149,6 +154,10 @@ class ActaController extends Controller
             return response()->json($data,404);
         }
         
+        if ($request->has('fecha')){
+            $acta->fecha = $request->fecha;
+        }
+        
         if ($request->has('descripcion')){
             $acta->descripcion = $request->descripcion;
         }
@@ -161,12 +170,16 @@ class ActaController extends Controller
             $acta->tecnico = $request->tecnico;
         }
         
+        if ($request->has('estado')){
+            $acta->estado = $request->estado;
+        }
+        
         if ($request->has('supervisor')){
             $acta->supervisor = $request->supervisor;
         }
 
-        if ($request->has('descripcion')){
-            $acta->descripcion = $request->descripcion;
+        if ($request->has('observaciones')){
+            $acta->observaciones = $request->observaciones;
         }
         
         if ($request->has('actividad_id')){

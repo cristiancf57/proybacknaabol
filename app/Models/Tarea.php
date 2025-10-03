@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Reporte extends Model
+class Tarea extends Model
 {
     use HasFactory;
-    protected $table = 'reportes';
+    protected $table = 'tareas';
     protected $fillable = ['detalle','tipo_reporte','fecha','hora','estado','personal'];
 
     public function actareportes():HasOne{

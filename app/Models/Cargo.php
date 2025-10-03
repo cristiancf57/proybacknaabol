@@ -10,10 +10,10 @@ class Cargo extends Model
 {
     use HasFactory;
     protected $table = 'cargos';
-    protected $fillable = ['descripcion','abrebiado','area'];
+    protected $fillable = ['descripcion','area'];
 
-    public function users():HasMany{
-        return $this->hasMany(User::class);
+    public function designacion():HasMany{
+        return $this->hasMany(Designacion::class);
     }
 }
 

@@ -4,10 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Activo;
 use App\Models\Cargo;
-use App\Models\Reporte;
-use App\Models\Tipo;
+use App\Models\Tarea;
 use App\Models\User;
-use App\Models\Usuario;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -22,9 +20,8 @@ class DatabaseSeeder extends Seeder
         Cargo::factory(10)->create();
         // Usuario::factory(20)->create();
         User::factory(20)->create();
-        Tipo::factory(10)->create();
         Activo::factory(50)->create();
-        Reporte::factory(20)->create();
+        Tarea::factory(20)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',

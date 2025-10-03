@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('actareportes', function (Blueprint $table) {
+        Schema::create('designaciones', function (Blueprint $table) {
             $table->id();
-            $table->string('foto')->nullable();
-            $table->date('fecha')->nullable();
-            $table->time('hora')->nullable();
-            $table->string('descripcion',200)->nullable();
-            $table->string('estado',20)->nullable();
+            $table->string('esatdo',10);
+            $table->date('fecha_inicio')->nullabe();
+            $table->date('fecha_fin')->nullabe();
 
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->unsignedBigInteger('tarea_id');
-            $table->foreign('tarea_id')->references('id')->on('tareas')->onDelete('cascade');
-
+            $table->unsignedBigInteger('cargo_id');
+            $table->foreign('cargo_id')->references('id')->on('cargos')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('actareportes');
+        Schema::dropIfExists('designaciones');
     }
 };

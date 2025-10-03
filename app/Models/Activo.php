@@ -11,12 +11,7 @@ class Activo extends Model
 {
     use HasFactory;
     protected $table = 'activos';
-    // protected $fillable = ['marca','modelo','serie','color','activo','area','ubicacion','estado','descripcion','tipo_id'];
-    protected $fillable = ['detalle','codigo','marca','modelo','serie','color','area','ip','ubicacion','estado','fecha','descripcion','tipo_id'];
-
-    public function tipo():BelongsTo{
-        return $this->belongsTo(Tipo::class);
-    }
+    protected $fillable = ['detalle','codigo','marca','modelo','serie','color','area','ip','ubicacion','estado','fecha','descripcion','tipo'];
 
     public function movimientos():HasMany{
         return $this->hasMany(Movimiento::class);
@@ -24,5 +19,9 @@ class Activo extends Model
 
     public function mantenimientos():HasMany{
         return $this->hasMany(Mantenimiento::class);
+    }
+
+    public function componente():HasMany{
+        return $this->hasMany(Componente::class);
     }
 }

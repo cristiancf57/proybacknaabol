@@ -14,7 +14,7 @@ class Movimiento extends Model
     protected $fillable = ['tipo_movimiento','origen','destino','fecha','estado','descripcion','usuario_id','activo_id','ubicacion_id'];
 
     public function usuario():BelongsTo{
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(User::class);
     }
 
     public function activo():BelongsTo{

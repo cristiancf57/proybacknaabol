@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Acta;
 use App\Models\Actividad;
+use App\Models\Mantenimiento;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ActividadController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      */
     public function index()
@@ -41,7 +44,7 @@ class ActividadController extends Controller
             'tipo_mantenimiento' => 'required',
             'limpieza' => 'required',
             'sistema_operativo' => 'required',
-            'arcrivos' => 'required',
+            'archivos' => 'required',
             'hardware' => 'required',
             'software' => 'required',
             'mantenimiento_id' => 'required'
@@ -65,8 +68,33 @@ class ActividadController extends Controller
             'archivos' => $request->archivos,
             'hardware' => $request->hardware,
             'software' => $request->software,
+            'encargado' => $request->encargado,
+            'tecnico' => $request->tecnico,
+            'supervisor' => $request->supervisor,
             'observaciones' => $request->observaciones,
             'mantenimiento_id' => $request->mantenimiento_id
+        ]);
+
+        $estado = Mantenimiento::find($request->mantenimiento_id);
+        if ($request->has('estado')){
+            $estado->estado = $request->estado;
+        }
+        $estado->save();
+
+        // calcular la fecha de reprogramacion
+        $fecha = Carbon::now('America/La_Paz')->addMonths(12);
+        // Si la fecha cae en sábado → pásala a lunes (+2 días)
+        // Si la fecha cae en domingo → pásala a lunes (+1 día)
+        if ($fecha->isSaturday()) {
+            $fecha->addDays(2);
+        } elseif ($fecha->isSunday()) {
+            $fecha->addDay();
+        }
+
+         Mantenimiento::create([
+            'estado' => 'pendiente',
+            'fecha' =>  $fecha->toDateString(),
+            'activo_id' => $request->mantenimiento_id,
         ]);
         
         if (!$actividad){
@@ -143,6 +171,9 @@ class ActividadController extends Controller
         $actividad->archivos = $request->archivos;
         $actividad->hardware = $request->hardware;
         $actividad->software = $request->software;
+        $actividad->encargado = $request->encargado;
+        $actividad->tecnico = $request->tecnico;
+        $actividad->supervisor = $request->supervisor;
         $actividad->observaciones =$request->observaciones;
         $actividad->mantenimiento_id = $request->mantenimiento_id;
         $actividad->save();
@@ -155,9 +186,9 @@ class ActividadController extends Controller
         return response()->json($data, 200);
     }
 
-     /**
-     * Update the specified resource in storage.
-     */
+    /**
+    * Update the specified resource in storage.
+    */
     public function updatePartial(Request $request, string $id) {
         $actividad = Actividad::find($id);
         if (!$actividad) {
@@ -198,6 +229,18 @@ class ActividadController extends Controller
         
         if ($request->has('software')){
             $actividad->software = $request->software;
+        }
+        
+        if ($request->has('encargado')){
+            $actividad->encargado = $request->encargado;
+        }
+        
+        if ($request->has('tecnico')){
+            $actividad->tecnico = $request->tecnico;
+        }
+        
+        if ($request->has('supervisor')){
+            $actividad->supervisor = $request->supervisor;
         }
         
         if ($request->has('observaciones')){

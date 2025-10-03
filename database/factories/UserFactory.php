@@ -31,7 +31,6 @@ class UserFactory extends Factory
             'telefono'=> $this->faker->numberBetween(60000000, 79999999),
             'username'=> $this->faker->userName(),
             'password' => static::$password ??= Hash::make('password'),
-            'cargo_id'=> $this->faker->numberBetween(1, 10),
             'remember_token' => Str::random(10)
         ];
     }

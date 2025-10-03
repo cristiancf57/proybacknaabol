@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Tipo;
+use App\Http\Controllers\Controller;
+use App\Models\Cargo;
 use Illuminate\Http\Request;
 
-class TipoController extends Controller
+class CargoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $tipos = Tipo::all();
-        // return view('tipos.index', ['tipos'=>$tipos]);
-        if ($tipos->isEmpty()){
+        $roles = Cargo::all();
+        if ($roles->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($tipos);
+        return response()->json($roles);
+        // return view('cargos.index', ['cargos' => $roles]);
     }
 
     /**
@@ -29,7 +30,7 @@ class TipoController extends Controller
      */
     public function create()
     {
-        return view('tipos.create');
+        return view('cargos.create');
     }
 
     /**
@@ -38,8 +39,8 @@ class TipoController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'detalle' => 'required',
-            'descripcion' => 'required'
+            'descripcion' => 'required',
+            'area' => 'required',
         ]);
 
         if ($validator->fails()){
@@ -51,12 +52,12 @@ class TipoController extends Controller
             return response()->json($data, 400);
         }
 
-        $tipo = Tipo::create([
-            'detalle' => $request->detalle,
-            'descripcion' => $request->descripcion
+        $actividad = Cargo::create([
+            'descripcion' => $request->descripcion,
+            'area' => $request->area
         ]);
         
-        if (!$tipo){
+        if (!$actividad){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
@@ -65,10 +66,11 @@ class TipoController extends Controller
         }
 
         $data = [
-            'usuario' => $tipo,
+            'usuario' => $actividad,
             'status' =>201
         ];
         return response()->json($data, 201);
+
     }
 
     /**
@@ -76,9 +78,10 @@ class TipoController extends Controller
      */
     public function show(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.mostrar', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $cargo = Cargo::find($id);
+        // $rol = Cargo::where('cargo', 'like', '%ar%')->get();
+        // return view('cargos.mostrar',['mascota' => $cargo]);
+         return response()->json($cargo);
     }
 
     /**
@@ -86,9 +89,9 @@ class TipoController extends Controller
      */
     public function edit(string $id)
     {
-        $tipo = Tipo::find($id);
-        // return view('tipos.edit', ['tipo'=>$tipo]);
-        return response()->json($tipo);
+        $cargo = Cargo::find($id);
+        // return view('cargos.edit',['cargo'=>$cargo]);
+        return response()->json($cargo);
     }
 
     /**
@@ -96,36 +99,14 @@ class TipoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
-            $data = [
-                'message' => 'dato no encontrado',
-                'status' => 404
-            ];
-            return response()->json($data,404);
-        }
-
-        $validator = validator($request->all(),[
-            'detalle' => 'required',
-            'descripcion' => 'required'
-        ]);
-
-        if ($validator->fails()){
-            $data = [
-                'mesaje'=> 'error en la validacion de los datos',
-                'error'=> $validator->errors(),
-                'status'=> 400
-            ];
-            return response()->json($data, 400);
-        }
-        
-        $tipo->detalle = $request->detalle;
-        $tipo->descripcion = $request->descripcoin;
-        $tipo->save();
+        $cargo = Cargo::find($id);
+        $cargo->descripcion = $request->descripcion;
+        $cargo->area = $request->area;
+        $cargo->save();
 
         $data = [
-            'message'=> 'dato actualizado',
-            'tipo' => $tipo,
+            'message'=> 'actividad actualizado',
+            'cargo' => $cargo,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -136,8 +117,8 @@ class TipoController extends Controller
      */
     public function destroy(string $id)
     {
-        $tipo = Tipo::find($id);
-        if (!$tipo) {
+        $cargo = Cargo::find($id);
+        if (!$cargo) {
             $data = [
                 'message' => 'dato no encontrado',
                 'status' => 404
@@ -145,10 +126,10 @@ class TipoController extends Controller
             return response()->json($data, 404);
         }
 
-        $tipo->delete();
+        $cargo->delete();
 
         $data = [
-            'message' => 'dato eliminado',
+            'message' => 'cargo eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

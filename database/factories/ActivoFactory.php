@@ -30,7 +30,7 @@ class ActivoFactory extends Factory
             'estado'=> $this->faker->randomElement(['Operable','Reparacion','Baja']),
             'fecha' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'descripcion'=> $this->faker->text(30),
-            'tipo_id'=> $this->faker->numberBetween(1,10)
+            'tipo'=> $this->faker->randomElement(['computadora','servidor','laptop','impresora','enrutadores'])
         ];
     }
 }

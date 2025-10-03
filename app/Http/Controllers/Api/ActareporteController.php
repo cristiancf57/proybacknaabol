@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Actareporte;
+use App\Models\Tarea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -58,7 +60,6 @@ class ActareporteController extends Controller
             'fecha' => Carbon::now()->toDateString(),   // "2025-08-29"
             'hora'  => Carbon::now()->toTimeString(),   // "15:12:00"
             'descripcion' => $request->descripcion, 
-            'estado' => $request->estado, 
             'usuario_id' => $request->usuario_id,
             'reporte_id' => $request->reporte_id
         ]);

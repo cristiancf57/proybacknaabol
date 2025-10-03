@@ -12,7 +12,7 @@ class Repuesto extends Model
     protected $table = 'repuestos';
     protected $fillable = ['nombre','marca','modelo','descripcion','stock'];
 
-    public function componentes():HasMany{
+    public function componente():HasMany{
         return $this->hasMany(Componente::class);
     }
 }

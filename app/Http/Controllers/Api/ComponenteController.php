@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Actareporte;
+use App\Http\Controllers\Controller;
+use App\Models\Componente;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class ActareporteController extends Controller
+class ComponenteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $actasr = Actareporte::all();
-        if ($actasr->isEmpty()){
+        $componentes = Componente::all();
+        if ($componentes->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
                 'status'=> 200
             ];
             return response()->json($data,200);
         }
-        return response()->json($actasr);
-        // return view('actareporte.index',['reportes'=>$actasr]);
+        return response()->json($componentes);
+        // return view('componentes.index', ['componentes'=>$componentes]);
     }
 
     /**
@@ -30,7 +31,7 @@ class ActareporteController extends Controller
      */
     public function create()
     {
-        return view('actareporte.create');
+        return view('componentes.create');
     }
 
     /**
@@ -39,9 +40,10 @@ class ActareporteController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
+            'cantidad' => 'required',
             'descripcion' => 'required',
-            'usuario_id' => 'required',
-            'reporte_id' => 'required'
+            'mantenimiento_id' => 'required',
+            'repuesto_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -52,26 +54,25 @@ class ActareporteController extends Controller
             ];
             return response()->json($data, 400);
         }
-
-        $actar = Actareporte::create([
-            'foto' => $request->foto ?? 'default.jpg',
-            'fecha' => Carbon::now()->toDateString(),   // "2025-08-29"
-            'hora'  => Carbon::now()->toTimeString(),   // "15:12:00"
-            'descripcion' => $request->descripcion, 
-            'estado' => $request->estado, 
-            'usuario_id' => $request->usuario_id,
-            'reporte_id' => $request->reporte_id
+        
+        $componente = Componente::create([
+            'cantidad' => $request->cantidad,
+            'fecha' => Carbon::now('America/La_Paz')->toDateString(),
+            'descripcion' => $request->descripcion,
+            'mantenimiento_id' => $request->mantenimiento_id,
+            'repuesto_id' => $request->repuesto_id
         ]);
-
-        if (!$actar){
+        
+        if (!$componente){
             $data = [
                 'message' => 'Error al crear los registros',
                 'status' =>500
             ];
             return response()->json($data, 500);
         }
+
         $data = [
-            'usuario' => $actar,
+            'componente' => $componente,
             'status' =>201
         ];
         return response()->json($data, 201);
@@ -82,9 +83,9 @@ class ActareporteController extends Controller
      */
     public function show(string $id)
     {
-        $actar = Actareporte::find($id);
-        return response()->json($actar);
-        // return view('actareporte.mostrar',['reportes'=>$actar]);
+        $componente = Componente::find($id);
+        return response()->json($componente);
+        // return view('componentes.mostrar', ['componente'=>$componente]);
     }
 
     /**
@@ -92,9 +93,9 @@ class ActareporteController extends Controller
      */
     public function edit(string $id)
     {
-        $actar = Actareporte::find($id);
-        return response()->json($actar);
-        // return view('actareporte.edit',['reportes'=>$actar]);
+        $componente = Componente::find($id);
+        return response()->json($componente);
+        // return view('componentes.mostrar', ['componente'=>$componente]);
     }
 
     /**
@@ -102,19 +103,20 @@ class ActareporteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $actar = Actareporte::find($id);
-        if (!$actar) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'acta de reporte no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
 
         $validator = validator($request->all(),[
+            'cantidad' => 'required',
             'descripcion' => 'required',
-            'usuario_id' => 'required',
-            'reporte_id' => 'required'
+            'mantenimiento_id' => 'required',
+            'repuesto_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -125,63 +127,59 @@ class ActareporteController extends Controller
             ];
             return response()->json($data, 400);
         }
+        $componente->cantadad = $request->cantadad;
+        $componente->fecha = $request->fecha;
+        $componente->descripcion = $request->descripcion;
+        $componente->mantenimiento_id = $request->mantenimiento_id;
+        $componente->repuesto_id = $request->repuesto_id;
+        $componente->save();
 
-        $actar->foto = $request->foto ?? 'default.jpg';
-        $actar->fecha= Carbon::now()->toDateString();   // "2025-08-29"
-        $actar->hora = Carbon::now()->toTimeString();   // "15:12:00"
-        $actar->descripcion = $request->descripcion;
-        $actar->estado = $request->estado;
-        $actar->usuario_id = $request->usuario_id;
-        $actar->reporte_id = $request->reporte_id;
-        $actar->save();
+        $data = [
+            'message'=> 'componente actualizado',
+            'componente' => $componente,
+            'status' =>200
+        ];
+        return response()->json($data, 200);
     }
 
-    /**
+     /**
      * Update the specified resource in storage.
      */
     public function updatePartial(Request $request, string $id) {
-        $actar = Actareporte::find($id);
-        if (!$actar) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'acta de reporte no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data,404);
         }
         
-        if ($request->has('foto')){
-            $actar->foto = $request->foto;
+        if ($request->has('cantidad')){
+            $componente->cantidad = $request->cantidad;
         }
 
         if ($request->has('fecha')){
-            $actar->fecha = $request->fecha;
-        }
-
-        if ($request->has('hora')){
-            $actar->hora = $request->hora;
+            $componente->fecha = $request->fecha;
         }
         
         if ($request->has('descripcion')){
-            $actar->descripcion = $request->descripcion;
+            $componente->descripcion = $request->descripcion;
         }
         
-        if ($request->has('estado')){
-            $actar->estado = $request->estado;
+        if ($request->has('mantenimiento_id')){
+            $componente->mantenimiento_id = $request->mantenimiento_id;
         }
         
-        if ($request->has('usuario_id')){
-            $actar->usuario_id = $request->usuario_id;
+        if ($request->has('repuesto_id')){
+            $componente->repuesto_id = $request->repuesto_id;
         }
         
-        if ($request->has('reporte_id')){
-            $actar->reporte_id = $request->reporte_id;
-        }
-        
-        $actar->save();
+        $componente->save();
 
         $data = [
-            'message'=> 'acta de reporte actualizado',
-            'acta' => $actar,
+            'message'=> 'componente actualizado',
+            'componente' => $componente,
             'status' =>200
         ];
         return response()->json($data, 200);
@@ -192,19 +190,18 @@ class ActareporteController extends Controller
      */
     public function destroy(string $id)
     {
-        $actar = Actareporte::find($id);
-        if (!$actar) {
+        $componente = Componente::find($id);
+        if (!$componente) {
             $data = [
-                'message' => 'acta de reporte no encontrado',
+                'message' => 'componente no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-
-        $actar->delete();
-
+        $componente->delete();
+        
         $data = [
-            'message' => 'acta de reporte eliminado',
+            'message' => 'componente eliminado',
             'status' => 200
         ];
         return response()->json($data, 200);

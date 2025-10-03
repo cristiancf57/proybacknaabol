@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
 
 class UsuarioController extends Controller
@@ -14,6 +14,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
+        // $usuarios = User::all();
         $usuarios = User::with('cargo')->get();
         if ($usuarios->isEmpty()){
             $data = [
@@ -24,7 +25,7 @@ class UsuarioController extends Controller
         }
         return response()->json($usuarios);
         
-        return view('usuarios.index', ['usuarios' => $usuarios]);
+        // return view('usuarios.index', ['usuarios' => $usuarios]);
     }
 
     /**
@@ -46,8 +47,7 @@ class UsuarioController extends Controller
             'email' => 'required|email',
             'telefono' => 'required',
             'username' => 'required',
-            'password' => 'required',
-            'cargo_id' => 'required'
+            'password' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -66,8 +66,7 @@ class UsuarioController extends Controller
             'email_verified_at' => Carbon::now('America/La_Paz'),
             'telefono' => $request->telefono,
             'username' => $request->username,
-            'password' => $request->password,
-            'cargo_id' => $request->cargo_id
+            'password' => $request->password
         ]);
         
         if (!$usuario){
@@ -93,7 +92,7 @@ class UsuarioController extends Controller
     {
         $usuario = User::find($id);
         return response()->json($usuario);
-        // return view('usuarios.show',['usuario'=> $usuario]);
+        // return view('usuarios.mostrar',['usuario'=> $usuario]);
     }
 
     /**
@@ -125,8 +124,7 @@ class UsuarioController extends Controller
             'email' => 'required|email',
             'telefono' => 'required',
             'username' => 'required',
-            'password' => 'required',
-            'cargo_id' => 'required'
+            'password' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -145,7 +143,6 @@ class UsuarioController extends Controller
         $usuario->telefono = $request->telefono;
         $usuario->username = $request->username;
         $usuario->password = $request->password;
-        $usuario->cargo_id = $request->cargo_id;
         $usuario->save();
 
         $data = [
@@ -175,8 +172,7 @@ class UsuarioController extends Controller
             'email' => 'email',
             'telefono' => 'max:15',
             'username' => 'max:40',
-            'password' => 'max:255',
-            'cargo_id' => 'max:5'
+            'password' => 'max:255'
         ]);
 
         if ($validator->fails()){
@@ -210,10 +206,6 @@ class UsuarioController extends Controller
         
         if ($request->has('password')){
             $usuario->password = $request->password;
-        }
-        
-        if ($request->has('cargo_id')){
-            $usuario->cargo_id = $request->cargo_id;
         }
         
         $usuario->save();

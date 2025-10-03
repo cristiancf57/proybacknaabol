@@ -21,6 +21,9 @@ return new class extends Migration
             $table->enum('archivos',['si','no'])->nullable();
             $table->enum('hardware',['si','no'])->nullable();
             $table->enum('software',['si','no'])->nullable();
+            $table->string('encargado',60)->nullable();
+            $table->string('tecnico',60)->nullable();
+            $table->string('supervisor',60)->nullable();
             $table->string('observaciones',200)->nullable();
 
             $table->unsignedBigInteger('mantenimiento_id');

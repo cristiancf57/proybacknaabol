@@ -10,9 +10,14 @@ class Actareporte extends Model
 {
     use HasFactory;
     protected $table = 'actareportes';
-    protected $fillable = ['foto','fecha','hora','descripcion','usuario_id','reporte_id'];
+    protected $fillable = ['foto','fecha','hora','descripcion', 'estado','usuario_id','tarea_id'];
 
-    public function reporte():HasOne{
-        return $this->hasOne(Reporte::class);
+    public function tarea():HasOne{
+        return $this->hasOne(Tarea::class);
     }
+
+    public function usuarios():HasOne{
+        return $this->hasOne(User::class);
+    }
+
 }

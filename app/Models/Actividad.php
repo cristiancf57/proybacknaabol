@@ -9,13 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Actividad extends Model
 {
     protected $table = 'actividades';
-    protected $fillable = ['foto','fecha','tipo_mantenimiento','limpieza','sistema_operativo','archivos','hardware','software','observaciones','mantenimiento_id'];
+    protected $fillable = ['foto','fecha','tipo_mantenimiento','limpieza','sistema_operativo','archivos','hardware','software','encargado','tecnico','supervisor','observaciones','mantenimiento_id'];
 
     public function mantenimiento():BelongsTo{
         return $this->belongsTo(Mantenimiento::class);
     }
 
-    public function acta():HasOne{
-        return $this->hasOne(Acta::class);
-    }
 }

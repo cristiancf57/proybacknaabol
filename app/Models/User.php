@@ -25,10 +25,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $table = 'users';
-    protected $fillable = ['nombre','apellido','email','email_verified_at','telefono','username','password','cargo_id'];
+    protected $fillable = ['nombre','apellido','email','email_verified_at','telefono','username','password'];
 
-    public function cargo():BelongsTo{
-        return $this->belongsTo(Cargo::class);
+    public function designacion():HasMany{
+        return $this->hasMany(Designacion::class);
     }
 
     public function movimientos():HasMany{

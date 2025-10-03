@@ -18,7 +18,6 @@ class CargoFactory extends Factory
     {
         return [
             'descripcion'=> $this->faker->name(),
-            'abrebiado'=> $this->faker->text(5),
             'area'=> $this->faker->text(20)
         ];
     }

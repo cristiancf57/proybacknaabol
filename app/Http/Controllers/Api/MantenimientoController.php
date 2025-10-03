@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Mantenimiento;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class MantenimientoController extends Controller
      */
     public function index()
     {
-        $mantenimientos = Mantenimiento::with('activo')->get();
+        $mantenimientos = Mantenimiento::all();
         if ($mantenimientos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -38,7 +39,6 @@ class MantenimientoController extends Controller
      */
     public function store(Request $request)
     {   $validator = validator($request->all(),[
-            'estado' => 'required',
             'activo_id' => 'required'
         ]);
 
@@ -52,7 +52,7 @@ class MantenimientoController extends Controller
         }
 
         $mantenimiento = Mantenimiento::create([
-            'estado' => $request->estado,
+            'estado' => $request->estado ?? 'pendiente',
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),
             'activo_id' => $request->activo_id
         ]);
@@ -147,6 +147,38 @@ class MantenimientoController extends Controller
             ];
             return response()->json($data,404);
         }
+
+        if ($request->has('estado')){
+            $mantenimiento->estado = $request->estado;
+        }
+        
+        if ($request->has('fecha')){
+            $mantenimiento->fecha = $request->fecha;
+        }
+        
+        if ($request->has('observaciones')){
+            $mantenimiento->observaciones = $request->observaciones;
+        }
+        
+        if ($request->has('activo_id')){
+            $mantenimiento->activo_id = $request->activo_id;
+        }
+        
+        $mantenimiento->save();
+
+        $data = [
+            'message'=> 'mantenimiento actualizado',
+            'mantenimiento' => $mantenimiento,
+            'status' =>200
+        ];
+        return response()->json($data, 200);
+    }
+
+    /**
+     * Actualizar el estado the specified resource in storage.
+     */
+    public function updateEstado(Request $request, string $id, $estado) {
+        $mantenimiento = Mantenimiento::find($id);
 
         if ($request->has('estado')){
             $mantenimiento->estado = $request->estado;

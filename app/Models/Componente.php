@@ -12,11 +12,11 @@ class Componente extends Model
     protected $table = 'componentes';
     protected $fillable = ['cantidad','fecha','descripcion','mantenimiento_id','repuesto_id'];
 
-    public function mantenimiento():BelongsTo{
-        return $this->belongsTo(Mantenimiento::class);
+    public function activos():BelongsTo{
+        return $this->belongsTo(Activo::class);
     }
 
-    public function repuesto():BelongsTo{
+    public function repuestos():BelongsTo{
         return $this->belongsTo(Repuesto::class);
     }
 }

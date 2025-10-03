@@ -25,9 +25,7 @@ return new class extends Migration
             $table->enum('estado',['Operable','Reparacion', 'Baja'])->default('Activo');
             $table->date('fecha');
             $table->string('descripcion',100)->nullable();
-
-            $table->unsignedBigInteger('tipo_id');
-            $table->foreign('tipo_id')->references('id')->on('tipos')->onDelete('cascade');
+            $table->string('tipo',90)->nullable();
 
             $table->timestamps();
         });

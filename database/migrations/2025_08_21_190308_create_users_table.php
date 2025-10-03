@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('username',60);
             $table->string('password');
 
-            $table->unsignedBigInteger('cargo_id');
-            $table->foreign('cargo_id')->references('id')->on('cargos')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reporte;
+use App\Models\Tarea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class ReporteController extends Controller
      */
     public function index()
     {
-        $reportes = Reporte::all();
+        $reportes = Tarea::all();
         if ($reportes->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -54,7 +54,7 @@ class ReporteController extends Controller
             return response()->json($data, 400);
         }
 
-        $actividad = Reporte::create([
+        $actividad = tarea::create([
             'detalle' => $request->detalle,
             'tipo_reporte' => $request->tipo_reporte,
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),  // "2025-08-29"
@@ -83,7 +83,7 @@ class ReporteController extends Controller
      */
     public function show(string $id)
     {
-        $reporte = Reporte::find($id);
+        $reporte = Tarea::find($id);
         return response()->json($reporte);
         // return view('reportes.mostrar',['reportes'=>$reporte]);
     }
@@ -93,7 +93,7 @@ class ReporteController extends Controller
      */
     public function edit(string $id)
     {
-        $reporte = Reporte::find($id);
+        $reporte = Tarea::find($id);
         return response()->json($reporte);
         // return view('reportes.edit',['reportes'=>$reporte]);
     }
@@ -103,7 +103,7 @@ class ReporteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $reporte = Reporte::find($id);
+        $reporte = Tarea::find($id);
         if (!$reporte) {
             $data = [
                 'message' => 'reporte no encontrado',
@@ -134,7 +134,7 @@ class ReporteController extends Controller
      */
     public function destroy(string $id)
     {
-        $reporte = Reporte::find($id);
+        $reporte = Tarea::find($id);
         if (!$reporte) {
             $data = [
                 'message' => 'reporte no encontrado',
