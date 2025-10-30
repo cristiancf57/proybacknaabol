@@ -14,8 +14,8 @@ class Mantenimiento extends Model
     protected $table = 'mantenimientos';
     protected $fillable = ['estado','fecha','observaciones','activo_id'];
 
-    public function usuarios():BelongsTo{
-        return $this->belongsTo(User::class);
+    public function activo():BelongsTo{
+        return $this->belongsTo(Activo::class);
     }
 
     public function actividades():HasMany{

@@ -14,7 +14,7 @@ class MantenimientoController extends Controller
      */
     public function index()
     {
-        $mantenimientos = Mantenimiento::all();
+        $mantenimientos = Mantenimiento::with('activo')->orderBy('id', 'desc')->get();
         if ($mantenimientos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -25,6 +25,40 @@ class MantenimientoController extends Controller
         return response()->json($mantenimientos);
         // return view('mantenimientos.index', ['mantenimientos'=>$mantenimientos]);
     }
+    /**
+     * Display a listing of the resource.
+     */
+    public function calendar()
+    {
+        $mantenimientos = Mantenimiento::with('activo')->get();
+        if ($mantenimientos->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($mantenimientos);
+        // return view('mantenimientos.index', ['mantenimientos'=>$mantenimientos]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function detalle()
+    {
+        $mantenimientos = Mantenimiento::with('activo')->where('estado', 'pendiente')->orderBy('fecha', 'asc')->limit(7)->get();
+        if ($mantenimientos->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($mantenimientos);
+        // return view('mantenimientos.index', ['mantenimientos'=>$mantenimientos]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -79,6 +113,23 @@ class MantenimientoController extends Controller
     {
         $mantenimiento = Mantenimiento::find($id);
         // return view('mantenimientos.mostrar', ['mantenimiento'=>$mantenimiento]);
+        return response()->json($mantenimiento);
+    }
+
+    /**
+     * buscar por activo_id
+     */
+    public function activ(string $id)
+    {
+        $mantenimiento = Mantenimiento::where('activo_id',$id)->orderBy('fecha','desc')->get();
+
+        if ($mantenimiento->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
         return response()->json($mantenimiento);
     }
 

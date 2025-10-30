@@ -27,6 +27,22 @@ class ActividadController extends Controller
         return response()->json($actividades);
     }
 
+     /**
+     * Display a listing of the resource.
+     */
+    public function detalle()
+    {
+        $actividades = Actividad::with(['mantenimiento','mantenimiento.activo'])->get();
+        if ($actividades->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($actividades);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -42,11 +58,6 @@ class ActividadController extends Controller
     {
         $validator = validator($request->all(),[
             'tipo_mantenimiento' => 'required',
-            'limpieza' => 'required',
-            'sistema_operativo' => 'required',
-            'archivos' => 'required',
-            'hardware' => 'required',
-            'software' => 'required',
             'mantenimiento_id' => 'required'
         ]);
 
@@ -68,12 +79,18 @@ class ActividadController extends Controller
             'archivos' => $request->archivos,
             'hardware' => $request->hardware,
             'software' => $request->software,
-            'encargado' => $request->encargado,
-            'tecnico' => $request->tecnico,
-            'supervisor' => $request->supervisor,
-            'observaciones' => $request->observaciones,
+            'encargado' => $request->encargado ?? '.',
+            'tecnico' => $request->tecnico ?? '.',
+            'supervisor' => $request->supervisor ?? '.',
+            'observaciones' => $request->observaciones ?? '.',
             'mantenimiento_id' => $request->mantenimiento_id
         ]);
+
+        $id =$request->mantenimiento_id;
+        $mantenimiento = Mantenimiento::find($id);
+        if ($request->has('estado')){
+            $mantenimiento->estado = 'culminado';
+        }
 
         $estado = Mantenimiento::find($request->mantenimiento_id);
         if ($request->has('estado')){
@@ -117,7 +134,8 @@ class ActividadController extends Controller
      */
     public function show(string $id)
     {
-        $actividad = Actividad::find($id);
+        // $actividad = Actividad::find($id);
+        $actividad = Actividad::with(['mantenimiento','mantenimiento.activo'])->find($id);
         return response()->json($actividad);
     }
 

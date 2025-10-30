@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('fecha');
             $table->string('descripcion',150)->nullable();
 
-            $table->unsignedBigInteger('mantenimiento_id');
-            $table->foreign('mantenimiento_id')->references('id')->on('mantenimientos')->onDelete('cascade');
+            $table->unsignedBigInteger('activo_id');
+            $table->foreign('activo_id')->references('id')->on('activos')->onDelete('cascade');
 
             $table->unsignedBigInteger('repuesto_id');
             $table->foreign('repuesto_id')->references('id')->on('repuestos')->onDelete('cascade');

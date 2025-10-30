@@ -27,10 +27,10 @@ class ActivoFactory extends Factory
             'area'=> $this->faker->randomElement(['sistemas','administrativa','financiera','mantenimiento','electronica','jefatura','coe','cns']),
             'ip' => $this->faker->ipv4,
             'ubicacion'=> $this->faker->text(15),
-            'estado'=> $this->faker->randomElement(['Operable','Reparacion','Baja']),
+            'estado'=> $this->faker->randomElement(['activo', 'mantenimiento']),
             'fecha' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'descripcion'=> $this->faker->text(30),
-            'tipo'=> $this->faker->randomElement(['computadora','servidor','laptop','impresora','enrutadores'])
+            'tipo'=> $this->faker->randomElement(['computadora','servidor','laptop','impresora','camara'])
         ];
     }
 }

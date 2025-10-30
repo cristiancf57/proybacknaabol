@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Repuesto extends Model
@@ -12,7 +13,7 @@ class Repuesto extends Model
     protected $table = 'repuestos';
     protected $fillable = ['nombre','marca','modelo','descripcion','stock'];
 
-    public function componente():HasMany{
+    public function componentes():HasMany{
         return $this->hasMany(Componente::class);
     }
 }

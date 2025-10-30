@@ -72,7 +72,7 @@ class ActivoController extends Controller
             'estado' => $request->estado,
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),
             'descripcion' => $request->descripcion,
-            'tipo_id' => $request->tipo_id,
+            'tipo' => $request->tipo,
         ]);
         
         // calcular la fecha de reprogramacion
@@ -172,7 +172,7 @@ class ActivoController extends Controller
         $activo->estado = $request->estado;
         $activo->fecha = $request->fecha;
         $activo->descripcion = $request->descripcion;
-        $activo->tipo_id = $request->tipo_id;
+        $activo->tipo = $request->tipo;
         $activo->save();
 
         $data = [

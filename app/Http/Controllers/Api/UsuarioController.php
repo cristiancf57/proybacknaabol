@@ -15,7 +15,8 @@ class UsuarioController extends Controller
     public function index()
     {
         // $usuarios = User::all();
-        $usuarios = User::with('cargo')->get();
+        // $usuarios = User::with('cargo')->get();
+        $usuarios = User::all();
         if ($usuarios->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -43,9 +44,6 @@ class UsuarioController extends Controller
     {
         $validator = validator($request->all(),[
             'nombre' => 'required|max:60',
-            'apellido' => 'required',
-            'email' => 'required|email',
-            'telefono' => 'required',
             'username' => 'required',
             'password' => 'required'
         ]);
@@ -141,6 +139,7 @@ class UsuarioController extends Controller
         $usuario->apellido = $request->apellido;
         $usuario->email = $request->email;
         $usuario->telefono = $request->telefono;
+        $usuario->perfil = $request->perfil;
         $usuario->username = $request->username;
         $usuario->password = $request->password;
         $usuario->save();
@@ -198,6 +197,10 @@ class UsuarioController extends Controller
         
         if ($request->has('telefono')){
             $usuario->telefono = $request->telefono;
+        }
+        
+        if ($request->has('perfil')){
+            $usuario->perfil = $request->perfil;
         }
         
         if ($request->has('username')){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Componente;
+use App\Models\Repuesto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -40,9 +41,7 @@ class ComponenteController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'cantidad' => 'required',
-            'descripcion' => 'required',
-            'mantenimiento_id' => 'required',
+            'activo_id' => 'required',
             'repuesto_id' => 'required'
         ]);
 
@@ -59,9 +58,23 @@ class ComponenteController extends Controller
             'cantidad' => $request->cantidad,
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),
             'descripcion' => $request->descripcion,
-            'mantenimiento_id' => $request->mantenimiento_id,
+            'activo_id' => $request->activo_id,
             'repuesto_id' => $request->repuesto_id
         ]);
+
+        $repuesto = Repuesto::find($request->repuesto_id);
+        if (!$repuesto) {
+            $data = [
+                'message' => 'actividad no encontrado',
+                'status' => 404
+            ];
+            return response()->json($data,404);
+        }
+        
+        $stock = $repuesto->stock;
+        if ($request->has('stock')){
+            $repuesto->stock = $stock - $request->cantidad;
+        }
         
         if (!$componente){
             $data = [
@@ -84,6 +97,16 @@ class ComponenteController extends Controller
     public function show(string $id)
     {
         $componente = Componente::find($id);
+        return response()->json($componente);
+        // return view('componentes.mostrar', ['componente'=>$componente]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function asignados(string $id)
+    {
+        $componente = Componente::with('repuesto')->where('activo_id', $id)->get();
         return response()->json($componente);
         // return view('componentes.mostrar', ['componente'=>$componente]);
     }

@@ -3,16 +3,17 @@
 use App\Http\Controllers\ActaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\ActivoController;
-use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\TareaController;
 use App\Http\Controllers\MantenimientoController;
-use App\Models\Reporte;
+
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
+use App\Models\Tarea;
 
 Route::get('/', function () {
 
-    $reportes = Reporte::all();
+    $reportes = Tarea::all();
     
     return view('welcome',['reportes'=>$reportes]);
 });
@@ -38,7 +39,7 @@ Route::controller(ActivoController::class)->group(function (){
 });
 
 // controladores de reportes
-Route::controller(ReporteController::class)->group(function (){
+Route::controller(TareaController::class)->group(function (){
     Route::get('/reportes', 'index');
     Route::post('/reportes', 'store');
     Route::get('/reportes/{id}', 'show');
@@ -58,13 +59,13 @@ Route::controller(MantenimientoController::class)->group(function (){
 });
 
 // controladores de actividades
-Route::controller(ActividadController::class)->group(function (){
-    Route::get('/actividades', 'index');
-    Route::post('/actividades', 'store');
-    Route::get('/actividades/{id}', 'show');
-    Route::put('/actividades/{id}', 'update');
-    Route::patch('/actividades/{id}', 'updatePartial');
-    Route::delete('/actividades/{id}', 'destroy');
-});
+// Route::controller(ActividadController::class)->group(function (){
+//     Route::get('/actividades', 'index');
+//     Route::post('/actividades', 'store');
+//     Route::get('/actividades/{id}', 'show');
+//     Route::put('/actividades/{id}', 'update');
+//     Route::patch('/actividades/{id}', 'updatePartial');
+//     Route::delete('/actividades/{id}', 'destroy');
+// });
 
 Route::get('/actas', [ActaController::class, 'index']);

@@ -15,7 +15,7 @@ class ActivoController extends Controller
      */
     public function index()
     {
-        $activos = Activo::all();
+        $activos = Activo::orderBy('id', 'desc')->get();
         // return view('activos.intex', ['activos'=>$activos]);
         if ($activos->isEmpty()){
             $data = [
@@ -25,6 +25,36 @@ class ActivoController extends Controller
             return response()->json($data,200);
         }
         return response()->json($activos);
+    }
+
+    /**
+     * Obtener estadísticas de activos por tipo
+     */
+    public function getEstadisticas()
+    {
+        $estadisticas = Activo::where('estado', 'activo')
+            ->selectRaw('tipo as categoria, COUNT(*) as cantidad')
+            ->groupBy('tipo')
+            ->get();
+
+        if ($estadisticas->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($estadisticas);
+
+    }
+
+    /**
+     * buscar por codigo
+     */
+    public function codig(string $codigo)
+    {
+        $activo = Activo::where('codigo',$codigo)->get();
+        return response()->json($activo);
     }
 
     /**
@@ -41,14 +71,7 @@ class ActivoController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'detalle' => 'required',
             'codigo' => 'required',
-            'marca' => 'required',
-            'color' => 'required',
-            'area' => 'required',
-            'estado' => 'required',
-            'descripcion' => 'required',
-            'tipo' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -68,18 +91,40 @@ class ActivoController extends Controller
             'serie' => $request->serie,
             'color' => $request->color,
             'area' => $request->area,
-            'ip' => $request->ip,
+            'ip' => $request->ip ?? '0.0.0.0',
             'ubicacion' => $request->ubicacion,
-            'estado' => $request->estado,
-            'fecha' => Carbon::now('America/La_Paz')->toDateString(),
-            'descripcion' => $request->descripcion,
+            'estado' => $request->estado ?? 'activo',
+            'fecha' => $request->fecha ?? Carbon::now('America/La_Paz')->toDateString(),
+            'descripcion' => $request->descripcion ?? '-',
             'tipo' => $request->tipo,
         ]);
         
         // calcular la fecha de reprogramacion
-        $fecha = Carbon::now('America/La_Paz')->addMonths(12);
-        // Si la fecha cae en sábado → pásala a lunes (+2 días)
-        // Si la fecha cae en domingo → pásala a lunes (+1 día)
+        // Si la fecha cae en sábado → pásala a lunes (+2 días) y Si la fecha cae en domingo → pásala a lunes (+1 día)
+
+        if (in_array($request->tipo, ['computadora', 'laptop', 'miniPC'])) {
+            if ($request->fecha) {
+                // Convertir a Carbon si es string
+                $fecha = Carbon::parse($request->fecha)->addMonths(6);
+            } else {
+                $fecha = Carbon::now('America/La_Paz')->addMonths(6);
+            }
+        } elseif ($request->tipo == 'impresora') {
+            if ($request->fecha) {
+                $fecha = Carbon::parse($request->fecha)->addMonths(3);
+            } else {
+                $fecha = Carbon::now('America/La_Paz')->addMonths(3);
+            }
+        } else {
+            // Para cualquier otro tipo
+            if ($request->fecha) {
+                $fecha = Carbon::parse($request->fecha)->addMonths(12);
+            } else {
+                $fecha = Carbon::now('America/La_Paz')->addMonths(12);
+            }
+        }
+
+        // Ajustar si es fin de semana
         if ($fecha->isSaturday()) {
             $fecha->addDays(2);
         } elseif ($fecha->isSunday()) {
@@ -89,6 +134,7 @@ class ActivoController extends Controller
         Mantenimiento::create([
             'estado' => 'pendiente',
             'fecha' =>  $fecha->toDateString(),
+            'observaciones' =>  $request->detalle,
             'activo_id' => $activo->id,
         ]);
         

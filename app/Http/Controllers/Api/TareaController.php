@@ -8,7 +8,7 @@ use App\Models\Tarea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class ReporteController extends Controller
+class TareaController extends Controller
 {
     /**
      * Display a listing of the resource.

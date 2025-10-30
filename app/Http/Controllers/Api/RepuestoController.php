@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Repuesto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RepuestoController extends Controller
 {
@@ -14,6 +15,22 @@ class RepuestoController extends Controller
     public function index()
     {
         $repuestos = Repuesto::all();
+        if ($repuestos->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($repuestos);
+        // return view('repuestos.index',['repuestos'=>$repuestos]);
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function disponibles()
+    {
+        $repuestos = Repuesto::where('stock', '>=', 1)->get();
         if ($repuestos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -140,6 +157,54 @@ class RepuestoController extends Controller
             'status' =>200
         ];
         return response()->json($data, 200);
+    }
+
+    /**
+    * Update the specified resource in storage.
+    */
+    public function updateStock(Request $request, $id) {
+        // Log::info('Datos recibidos:', $request->all());
+        // Log::info('ID recibido:', ['id' => $id]);
+
+        try {
+            $repuesto = Repuesto::findOrFail($id);
+            $allData = $request->all();
+            // Log::info('Estructura completa de datos:', $allData);
+
+            if (is_array($allData) && count($allData) === 1 && isset($allData[0])) {
+                $nuevoStock = $allData[0];
+                // Log::info('Stock obtenido del array:', ['stock' => $nuevoStock]);
+            } else {
+                // Si viene como objeto normal
+                $nuevoStock = $request->stock ?? $request->input('stock');
+                // Log::info('Stock obtenido del objeto:', ['stock' => $nuevoStock]);
+            }
+            
+            // Validar que no sea null
+            if ($nuevoStock === null) {
+                Log::error('Stock es null');
+                return response()->json([
+                    'message' => 'El stock no puede ser null'
+                ], 400);
+            }
+            
+            // Log::info('Nuevo stock a guardar:', ['stock' => $nuevoStock]);
+            $repuesto->update([
+                'stock' => $nuevoStock
+            ]);
+
+            return response()->json([
+                'message' => 'Stock actualizado correctamente',
+                'repuesto' => $repuesto
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Log::error('Error al actualizar stock:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al actualizar stock',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
