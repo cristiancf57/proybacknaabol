@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -164,24 +166,6 @@ class UsuarioController extends Controller
             ];
             return response()->json($data,404);
         }
-
-        $validator = validator($request->all(),[
-            'nombre' => 'max:60',
-            'apellido' => 'max:50',
-            'email' => 'email',
-            'telefono' => 'max:15',
-            'username' => 'max:40',
-            'password' => 'max:255'
-        ]);
-
-        if ($validator->fails()){
-            $data = [
-                'mesaje'=> 'error en la validacion de los datos',
-                'error'=> $validator->errors(),
-                'status'=> 400
-            ];
-            return response()->json($data, 400);
-        }
         
         if ($request->has('nombre')){
             $usuario->nombre = $request->nombre;
@@ -198,7 +182,12 @@ class UsuarioController extends Controller
         if ($request->has('telefono')){
             $usuario->telefono = $request->telefono;
         }
-        
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('perfiles', 'public');
+            $usuario->update(['perfil' => $path]);
+        }
+
         if ($request->has('perfil')){
             $usuario->perfil = $request->perfil;
         }
@@ -243,5 +232,185 @@ class UsuarioController extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+
+    /**
+     * obtener a usuarios
+     */
+    public function roles()
+    {
+        // $roles = Role::all();
+        $roles = Role::with('permissions')->get();
+        if ($roles->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($roles);
+    }
+
+    /**
+     * obtener permisos
+     */
+    public function permissions()
+    {
+        $permissions = Permission::all();
+        if ($permissions->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($permissions);
+    }
+
+    /**
+     * Asignar un rol a un usuario
+     */
+    public function assignRole(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'role' => 'required|string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->assignRole($request->role);
+
+            // Recargar el usuario con roles y permisos
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rol asignado correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->nombre,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al asignar rol'
+            ], 500);
+        }
+    }
+
+    /**
+     * Sincronizar múltiples roles (reemplaza todos los roles)
+     */
+    public function syncRoles(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'roles' => 'required|array',
+                'roles.*' => 'string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->syncRoles($request->roles);
+
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Roles sincronizados correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al sincronizar roles'
+            ], 500);
+        }
+    }
+
+    /**
+     * Remover un rol de un usuario
+     */
+    public function removeRole(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'role' => 'required|string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->removeRole($request->role);
+
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rol removido correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al remover rol'
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtener usuarios con sus roles
+     */
+    public function getUsersWithRoles()
+    {
+        try {
+            $users = User::with('roles')->get()->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'users' => $users
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener usuarios'
+            ], 500);
+        }
     }
 }

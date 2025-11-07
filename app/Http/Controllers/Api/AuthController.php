@@ -49,6 +49,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'token_type' => 'Bearer'
             ]);
+            
 
         } catch (ValidationException $e) {
             return response()->json([
@@ -97,9 +98,11 @@ class AuthController extends Controller
     {
         return [
             'id' => $user->id,
-            'name' => $user->name,
+            'nombre' => $user->nombre,
+            'apellido' => $user->apellido,
             'username' => $user->username,
             'email' => $user->email,
+            'perfil' => $user->perfil,
             'email_verified_at' => $user->email_verified_at,
             'created_at' => $user->created_at,
             'roles' => $user->getRoleNames(),
@@ -112,14 +115,14 @@ class AuthController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
+                'nombre' => 'required|string|max:255',
                 'username' => 'required|string|unique:users,username',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6|confirmed'
             ]);
 
             $user = User::create([
-                'name' => $validated['name'],
+                'nombre' => $validated['nombre'],
                 'username' => $validated['username'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password'])

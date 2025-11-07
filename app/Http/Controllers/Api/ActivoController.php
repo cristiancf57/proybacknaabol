@@ -195,7 +195,6 @@ class ActivoController extends Controller
             'color' => 'required',
             'estado' => 'required',
             'descripcion' => 'required',
-            'mantenimiento_id' => 'required'
         ]);
 
         if ($validator->fails()){

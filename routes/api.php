@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ActivoController;
 use App\Http\Controllers\Api\ActividadController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ComponenteController;
+use App\Http\Controllers\Api\DesignacionController;
 use App\Http\Controllers\Api\MantenimientoController;
 use App\Http\Controllers\Api\RepuestoController;
 use App\Http\Controllers\Api\TareaController;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/permisos', [AuthController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -29,6 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/usuarios/{id}', 'update');
         Route::patch('/usuarios/{id}', 'updatePartial');
         Route::delete('/usuarios/{id}', 'destroy');
+    });
+     // Rutas para gestión de roles de usuarios
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UsuarioController::class, 'getUsersWithRoles']);
+        Route::post('/{id}/assign-role', [UsuarioController::class, 'assignRole']);
+        Route::post('/{id}/sync-roles', [UsuarioController::class, 'syncRoles']);
+        Route::post('/{id}/remove-role', [UsuarioController::class, 'removeRole']);
     });
 
     // Activos - Diferentes niveles de acceso
@@ -51,6 +60,49 @@ Route::middleware('auth:sanctum')->group(function () {
         // Estadísticas - Solo admin y manager
         // Route::get('/estadisticas', 'getEstadisticas')->middleware('role:admin|manager');
     });
+});
+
+// controladores de usuario
+Route::controller(UsuarioController::class)->group(function (){
+    Route::get('/usuarios', 'index');
+    Route::get('/roles', 'roles');
+    Route::get('/permissions', 'permissions');
+    Route::post('/usuarios', 'store');
+    Route::get('/usuarios/{id}', 'show');
+    Route::put('/usuarios/{id}', 'update');
+    Route::patch('/usuarios/{id}', 'updatePartial');
+    Route::delete('/usuarios/{id}', 'destroy');
+    // Route::post('/usuarios/{id}/assign-role', 'assignRole');
+    // Route::post('/usuarios/{id}/sync-roles', 'syncRoles');
+    // Route::post('/usuarios/{id}/remove-role', 'removeRole');
+});
+
+// controladores de designaciones
+Route::controller(DesignacionController::class)->group(function (){
+    Route::get('/designaciones', 'index');
+    // Route::get('/roles', 'roles');
+    // Route::get('/permissions', 'permissions');
+    Route::post('/designaciones', 'store');
+    Route::get('/designaciones/{id}', 'show');
+    Route::get('/designacioncargo/{id}', 'design');
+    Route::put('/designaciones/{id}', 'update');
+    Route::patch('/designaciones/{id}', 'updatePartial');
+    Route::delete('/designaciones/{id}', 'destroy');
+    Route::post('/designaciones/{id}/assign-role', 'assignRole');
+    Route::post('/designaciones/{id}/sync-roles', 'syncRoles');
+    Route::post('/designaciones/{id}/remove-role', 'removeRole');
+});
+
+// controladores de activos
+Route::controller(ActivoController::class)->group(function (){
+    Route::get('/activos', 'index');
+    Route::post('/activos', 'store');
+    Route::get('/activos/{id}', 'show');
+    Route::get('/activoscd/{codigo}', 'codig');
+    Route::put('/activos/{id}', 'update');
+    Route::patch('/activos/{id}', 'updatePartial');
+    Route::delete('/activos/{id}', 'destroy');
+    Route::get('/estadisticas', 'getEstadisticas');
 });
 
 // controladores de actividades

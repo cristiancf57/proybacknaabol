@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('designaciones', function (Blueprint $table) {
             $table->id();
-            $table->string('esatdo',10);
-            $table->date('fecha_inicio')->nullabe();
-            $table->date('fecha_fin')->nullabe();
-
+            $table->string('estado',10);
+            $table->date('fecha_inicio')->nullable();
+            $table->date('fecha_fin')->nullable();
+            $table->integer('role')->nullable();
             $table->unsignedBigInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
 

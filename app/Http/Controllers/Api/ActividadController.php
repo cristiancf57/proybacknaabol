@@ -110,6 +110,7 @@ class ActividadController extends Controller
 
          Mantenimiento::create([
             'estado' => 'pendiente',
+            'observaciones'=>'Mantenimiento posterior',
             'fecha' =>  $fecha->toDateString(),
             'activo_id' => $request->mantenimiento_id,
         ]);

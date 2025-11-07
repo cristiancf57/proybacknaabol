@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Designacion;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DesignacionController extends Controller
@@ -79,7 +81,23 @@ class DesignacionController extends Controller
     public function show(string $id)
     {
         $designacion = Designacion::find($id);
-         return response()->json($designacion);
+        return response()->json($designacion);
+    }
+
+    /**
+     * obtener toda las designaciones
+     */
+    public function design(string $id)
+    {
+        $designacion = Designacion::where('usuario_id', $id)->where('estado', 'activo')->with('cargo')->first();
+
+        if (!$designacion) {
+            return response()->json([
+                'message' => 'No se encontró designación activa para este usuario'
+            ], 404);
+        }
+        
+        return response()->json($designacion);
     }
 
     /**
@@ -199,5 +217,185 @@ class DesignacionController extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+
+    /**
+     * obtener a usuarios
+     */
+    // public function roles()
+    // {
+    //     // $roles = Role::all();
+    //     $roles = Role::with('permissions')->get();
+    //     if ($roles->isEmpty()){
+    //         $data = [
+    //             'message'=> 'Nose encontro el registro',
+    //             'status'=> 200
+    //         ];
+    //         return response()->json($data,200);
+    //     }
+    //     return response()->json($roles);
+    // }
+
+    /**
+     * obtener permisos
+     */
+    // public function permissions()
+    // {
+    //     $permissions = Permission::all();
+    //     if ($permissions->isEmpty()){
+    //         $data = [
+    //             'message'=> 'Nose encontro el registro',
+    //             'status'=> 200
+    //         ];
+    //         return response()->json($data,200);
+    //     }
+    //     return response()->json($permissions);
+    // }
+
+    /**
+     * Asignar un rol a un usuario
+     */
+    public function assignRole(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'role' => 'required|string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->assignRole($request->role);
+
+            // Recargar el usuario con roles y permisos
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rol asignado correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->nombre,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al asignar rol'
+            ], 500);
+        }
+    }
+
+    /**
+     * Sincronizar múltiples roles (reemplaza todos los roles)
+     */
+    public function syncRoles(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'roles' => 'required|array',
+                'roles.*' => 'string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->syncRoles($request->roles);
+
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Roles sincronizados correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al sincronizar roles'
+            ], 500);
+        }
+    }
+
+    /**
+     * Remover un rol de un usuario
+     */
+    public function removeRole(Request $request, $userId)
+    {
+        try {
+            $request->validate([
+                'role' => 'required|string|exists:roles,name'
+            ]);
+
+            $user = User::findOrFail($userId);
+            $user->removeRole($request->role);
+
+            $user->load('roles', 'permissions');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rol removido correctamente',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al remover rol'
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtener usuarios con sus roles
+     */
+    public function getUsersWithRoles()
+    {
+        try {
+            $users = User::with('roles')->get()->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'users' => $users
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener usuarios'
+            ], 500);
+        }
     }
 }
