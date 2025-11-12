@@ -16,7 +16,7 @@ class ActividadController extends Controller
      */
     public function index()
     {
-        $actividades = Actividad::all();
+        $actividades = Actividad::with(['mantenimiento','mantenimiento.activo'])->orderBy('fecha', 'desc')->limit(10)->get();
         if ($actividades->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
@@ -27,9 +27,9 @@ class ActividadController extends Controller
         return response()->json($actividades);
     }
 
-     /**
+    /**
      * Display a listing of the resource.
-     */
+    */
     public function detalle()
     {
         $actividades = Actividad::with(['mantenimiento','mantenimiento.activo'])->get();
@@ -44,6 +44,28 @@ class ActividadController extends Controller
     }
 
     /**
+     * Obtener estadísticas de activos por tipo
+     */
+    public function actividadEstadistica()
+    {
+        $estadisticas = Actividad::join('mantenimientos', 'actividades.mantenimiento_id', '=', 'mantenimientos.id')
+        ->join('activos', 'mantenimientos.activo_id', '=', 'activos.id')
+        ->selectRaw('activos.tipo as categoria, COUNT(*) as cantidad')
+        ->groupBy('activos.tipo')
+        ->get();
+
+        if ($estadisticas->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($estadisticas);
+
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -53,12 +75,13 @@ class ActividadController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
+    */
+
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
             'tipo_mantenimiento' => 'required',
-            'mantenimiento_id' => 'required'
+            'mantenimiento_id' => 'required|exists:mantenimientos,id' 
         ]);
 
         if ($validator->fails()){
@@ -68,6 +91,16 @@ class ActividadController extends Controller
                 'status'=> 400
             ];
             return response()->json($data, 400);
+        }
+
+        // Primero obtener el mantenimiento actual para saber el activo_id
+        $mantenimientoActual = Mantenimiento::find($request->mantenimiento_id);
+
+        if (!$mantenimientoActual) {
+            return response()->json([
+                'message' => 'Mantenimiento no encontrado',
+                'status' => 404
+            ], 404);
         }
 
         $actividad = Actividad::create([
@@ -86,46 +119,49 @@ class ActividadController extends Controller
             'mantenimiento_id' => $request->mantenimiento_id
         ]);
 
-        $id =$request->mantenimiento_id;
-        $mantenimiento = Mantenimiento::find($id);
+        // Actualizar estado del mantenimiento actual
         if ($request->has('estado')){
-            $mantenimiento->estado = 'culminado';
+            $mantenimientoActual->estado = $request->estado ?? 'culminado';
+            $mantenimientoActual->save();
         }
 
-        $estado = Mantenimiento::find($request->mantenimiento_id);
-        if ($request->has('estado')){
-            $estado->estado = $request->estado;
-        }
-        $estado->save();
+        // Calcular fecha de reprogramación
+        $fecha = Carbon::now('America/La_Paz');
 
-        // calcular la fecha de reprogramacion
-        $fecha = Carbon::now('America/La_Paz')->addMonths(12);
-        // Si la fecha cae en sábado → pásala a lunes (+2 días)
-        // Si la fecha cae en domingo → pásala a lunes (+1 día)
+        if (in_array($request->tipo_activo, ['computadora', 'laptop', 'miniPC'])) {
+            $fecha->addMonths(6);
+        } elseif ($request->tipo_activo == 'impresora') {
+            $fecha->addMonths(3);
+        } else {
+            $fecha->addMonths(12);
+        }
+
+        // Ajustar para fines de semana
         if ($fecha->isSaturday()) {
             $fecha->addDays(2);
         } elseif ($fecha->isSunday()) {
             $fecha->addDay();
         }
 
-         Mantenimiento::create([
+        // Crear nuevo mantenimiento con el activo_id correcto
+        Mantenimiento::create([
             'estado' => 'pendiente',
-            'observaciones'=>'Mantenimiento posterior',
-            'fecha' =>  $fecha->toDateString(),
-            'activo_id' => $request->mantenimiento_id,
+            'observaciones' => 'Mantenimiento posterior',
+            'fecha' => $fecha->toDateString(),
+            'activo_id' => $mantenimientoActual->activo_id,
         ]);
-        
+
         if (!$actividad){
             $data = [
                 'message' => 'Error al crear los registros',
-                'status' =>500
+                'status' => 500
             ];
             return response()->json($data, 500);
         }
 
         $data = [
             'actividad' => $actividad,
-            'status' =>201
+            'status' => 201
         ];
         return response()->json($data, 201);
     }

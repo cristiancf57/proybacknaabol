@@ -131,12 +131,15 @@ class ActivoController extends Controller
             $fecha->addDay();
         }
 
-        Mantenimiento::create([
-            'estado' => 'pendiente',
-            'fecha' =>  $fecha->toDateString(),
-            'observaciones' =>  $request->detalle,
-            'activo_id' => $activo->id,
-        ]);
+        if(!($request->estado == 'baja')){
+            Mantenimiento::create([
+                'estado' => 'pendiente',
+                'fecha' =>  $fecha->toDateString(),
+                'observaciones' =>  $request->detalle,
+                'activo_id' => $activo->id,
+            ]);
+        }
+        
         
         if (!$activo){
             $data = [
@@ -221,6 +224,40 @@ class ActivoController extends Controller
         $activo->tipo = $request->tipo;
         $activo->save();
 
+        if ($request->estado == 'baja'){
+            $mantenimiento = Mantenimiento::where('activo_id', $id)->first();
+            if (!$mantenimiento) {
+                $data = [
+                    'message' => 'mantenimiento no encontrado',
+                    'status' => 404
+                ];
+                return response()->json($data, 404);
+            }
+
+            $mantenimiento->delete();
+        }else{
+            // Para cualquier otro tipo
+            if ($request->fecha) {
+                $fecha = Carbon::parse($request->fecha)->addMonths(12);
+            } else {
+                $fecha = Carbon::now('America/La_Paz')->addMonths(12);
+            }
+
+            // Ajustar si es fin de semana
+            if ($fecha->isSaturday()) {
+                $fecha->addDays(2);
+            } elseif ($fecha->isSunday()) {
+                $fecha->addDay();
+            }
+            Mantenimiento::create([
+                'estado' => 'pendiente',
+                'fecha' =>  $fecha->toDateString(),
+                'observaciones' =>  $request->detalle,
+                'activo_id' => $activo->id,
+            ]);
+        }
+        
+
         $data = [
             'message'=> 'actividad actualizado',
             'actividad' => $activo,
@@ -295,6 +332,19 @@ class ActivoController extends Controller
         }
         
         $activo->save();
+
+        if ($request->estado == 'baja'){
+            $mantenimiento = Mantenimiento::where('activo_id', $id)->first();
+            if (!$mantenimiento) {
+                $data = [
+                    'message' => 'mantenimiento no encontrado',
+                    'status' => 404
+                ];
+                return response()->json($data, 404);
+            }
+
+            $mantenimiento->delete();
+        }
 
         $data = [
             'message'=> 'activo actualizado',

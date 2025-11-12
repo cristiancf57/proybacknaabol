@@ -109,6 +109,7 @@ Route::controller(ActivoController::class)->group(function (){
 Route::controller(ActividadController::class)->group(function (){
     Route::get('/actividad', 'index');
     Route::get('/actividades', 'detalle');
+    Route::get('/actividadesest', 'actividadEstadistica');
     Route::post('/actividades', 'store');
     Route::get('/actividades/{id}', 'show');
     Route::put('/actividades/{id}', 'update');

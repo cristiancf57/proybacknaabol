@@ -14,7 +14,7 @@ class MantenimientoController extends Controller
      */
     public function index()
     {
-        $mantenimientos = Mantenimiento::with('activo')->orderBy('id', 'desc')->get();
+        $mantenimientos = Mantenimiento::with('activo')->whereIn('estado', ['pendiente','cancelado'])->orderBy('fecha', 'asc')->get();
         if ($mantenimientos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',
