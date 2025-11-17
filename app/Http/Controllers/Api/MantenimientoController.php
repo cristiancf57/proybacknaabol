@@ -30,7 +30,11 @@ class MantenimientoController extends Controller
      */
     public function calendar()
     {
-        $mantenimientos = Mantenimiento::with('activo')->get();
+        $fechaActual = Carbon::now();
+        $dosMesesAtras = $fechaActual->copy()->subMonths(2);
+        $tresMesesAdelante = $fechaActual->copy()->addMonths(3);
+
+        $mantenimientos = Mantenimiento::with('activo')->whereBetween('fecha', [$dosMesesAtras, $tresMesesAdelante])->get();
         if ($mantenimientos->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',

@@ -140,7 +140,7 @@ class ActividadController extends Controller
         if ($fecha->isSaturday()) {
             $fecha->addDays(2);
         } elseif ($fecha->isSunday()) {
-            $fecha->addDay();
+            $fecha->addDay(1);
         }
 
         // Crear nuevo mantenimiento con el activo_id correcto

@@ -101,7 +101,6 @@ class ActivoController extends Controller
         
         // calcular la fecha de reprogramacion
         // Si la fecha cae en sábado → pásala a lunes (+2 días) y Si la fecha cae en domingo → pásala a lunes (+1 día)
-
         if (in_array($request->tipo, ['computadora', 'laptop', 'miniPC'])) {
             if ($request->fecha) {
                 // Convertir a Carbon si es string
@@ -128,7 +127,7 @@ class ActivoController extends Controller
         if ($fecha->isSaturday()) {
             $fecha->addDays(2);
         } elseif ($fecha->isSunday()) {
-            $fecha->addDay();
+            $fecha->addDay(1);
         }
 
         if(!($request->estado == 'baja')){
@@ -236,25 +235,40 @@ class ActivoController extends Controller
 
             $mantenimiento->delete();
         }else{
-            // Para cualquier otro tipo
-            if ($request->fecha) {
-                $fecha = Carbon::parse($request->fecha)->addMonths(12);
-            } else {
-                $fecha = Carbon::now('America/La_Paz')->addMonths(12);
-            }
+            // if (in_array($request->tipo, ['computadora', 'laptop', 'miniPC'])) {
+            //     if ($request->fecha) {
+            //         // Convertir a Carbon si es string
+            //         $fecha = Carbon::parse($request->fecha)->addMonths(6);
+            //     } else {
+            //         $fecha = Carbon::now('America/La_Paz')->addMonths(6);
+            //     }
+            // } elseif ($request->tipo == 'impresora') {
+            //     if ($request->fecha) {
+            //         $fecha = Carbon::parse($request->fecha)->addMonths(3);
+            //     } else {
+            //         $fecha = Carbon::now('America/La_Paz')->addMonths(3);
+            //     }
+            // } else {
+            //     // Para cualquier otro tipo
+            //     if ($request->fecha) {
+            //         $fecha = Carbon::parse($request->fecha)->addMonths(12);
+            //     } else {
+            //         $fecha = Carbon::now('America/La_Paz')->addMonths(12);
+            //     }
+            // }
 
-            // Ajustar si es fin de semana
-            if ($fecha->isSaturday()) {
-                $fecha->addDays(2);
-            } elseif ($fecha->isSunday()) {
-                $fecha->addDay();
-            }
-            Mantenimiento::create([
-                'estado' => 'pendiente',
-                'fecha' =>  $fecha->toDateString(),
-                'observaciones' =>  $request->detalle,
-                'activo_id' => $activo->id,
-            ]);
+            // // Ajustar si es fin de semana
+            // if ($fecha->isSaturday()) {
+            //     $fecha->addDays(2);
+            // } elseif ($fecha->isSunday()) {
+            //     $fecha->addDay(1);
+            // }
+            // Mantenimiento::create([
+            //     'estado' => 'pendiente',
+            //     'fecha' =>  $fecha->toDateString(),
+            //     'observaciones' =>  $request->detalle,
+            //     'activo_id' => $activo->id,
+            // ]);
         }
         
 
