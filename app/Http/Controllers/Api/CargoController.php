@@ -13,7 +13,8 @@ class CargoController extends Controller
      */
     public function index()
     {
-        $roles = Cargo::all();
+        // $roles = Cargo::all();
+        $roles = Cargo::where('descripcion', '!=', 'Desarrollador')->get();
         if ($roles->isEmpty()){
             $data = [
                 'message'=> 'Nose encontro el registro',

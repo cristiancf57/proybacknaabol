@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ActareporteController;
 use App\Http\Controllers\Api\ActivoController;
 use App\Http\Controllers\Api\ActividadController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CargoController;
 use App\Http\Controllers\Api\ComponenteController;
 use App\Http\Controllers\Api\DesignacionController;
 use App\Http\Controllers\Api\MantenimientoController;
@@ -79,7 +80,8 @@ Route::controller(UsuarioController::class)->group(function (){
 
 // controladores de designaciones
 Route::controller(DesignacionController::class)->group(function (){
-    Route::get('/designaciones', 'index');
+    Route::get('/designacion', 'index');
+    Route::get('/designaciones', 'detalle');
     // Route::get('/roles', 'roles');
     // Route::get('/permissions', 'permissions');
     Route::post('/designaciones', 'store');
@@ -160,6 +162,7 @@ Route::controller(RepuestoController::class)->group(function (){
     Route::patch('/repuestos/{id}', 'updateStock');
     Route::delete('/repuestos/{id}', 'destroy');
 });
+
 // controladores de componentes
 Route::controller(ComponenteController::class)->group(function (){
     Route::get('/componentes', 'index');
@@ -169,4 +172,14 @@ Route::controller(ComponenteController::class)->group(function (){
     Route::put('/componentes/{id}', 'update');
     Route::patch('/componentes/{id}', 'updatePartial');
     Route::delete('/componentes/{id}', 'destroy');
+});
+
+// controladores de componentes
+Route::controller(CargoController::class)->group(function (){
+    Route::get('/cargos', 'index');
+    Route::post('/cargos', 'store');
+    Route::get('/cargos/{id}', 'show');
+    Route::put('/cargos/{id}', 'update');
+    Route::patch('/cargos/{id}', 'updatePartial');
+    Route::delete('/cargos/{id}', 'destroy');
 });

@@ -26,6 +26,22 @@ class DesignacionController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function detalle()
+    {
+        $designacion = with('usuario','cargo')->get();
+        if ($designacion->isEmpty()){
+            $data = [
+                'message'=> 'Nose encontro el registro',
+                'status'=> 200
+            ];
+            return response()->json($data,200);
+        }
+        return response()->json($designacion);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -80,7 +96,7 @@ class DesignacionController extends Controller
      */
     public function show(string $id)
     {
-        $designacion = Designacion::find($id);
+        $designacion = Designacion::with(['cargo'])->find($id);
         return response()->json($designacion);
     }
 

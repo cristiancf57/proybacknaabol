@@ -39,11 +39,11 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'delete posts']);
 
         // Crear roles y asignar permisos
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
-
         $administradorRole = Role::create(['name' => 'administrador']);
         $administradorRole->givePermissionTo(Permission::all());
+
+        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole->givePermissionTo(Permission::all());
 
         $editorRole = Role::create(['name' => 'editor']);
         $editorRole->givePermissionTo(['view posts', 'create posts', 'edit posts']);
@@ -72,6 +72,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Designacion::create([
             'estado' => 'activo',
             'usuario_id' => $usuarioAdmin->id,
+            'rol_id' => $administradorRole,
             'cargo_id' => $cargoDesarrollador->id,
             'fecha_inicio' => now(),
             'fecha_fin' => null
