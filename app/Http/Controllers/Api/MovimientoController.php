@@ -43,10 +43,8 @@ class MovimientoController extends Controller
             'tipo_movimiento' => 'required',
             'oreigen' => 'required',
             'destino' => 'required',
-            'estado' => 'required',
             'usuario_id' => 'required',
             'activo_id' => 'required',
-            'ubicacion_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -63,11 +61,10 @@ class MovimientoController extends Controller
             'origen' => $request->origen,
             'destino' => $request->destino,
             'fecha' => Carbon::now('America/La_Paz')->toDateString(),
-            'estado' => $request->estado,
+            'estado' => $request->estado ??'nuevo',
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
             'activo_id' => $request->activo_id,
-            'ubicacion_id' => $request->ubicacion_id
         ]);
         
         if (!$movimiento){
@@ -123,10 +120,8 @@ class MovimientoController extends Controller
             'tipo_movimiento' => 'required',
             'oreigen' => 'required',
             'destino' => 'required',
-            'estado' => 'required',
             'usuario_id' => 'required',
             'activo_id' => 'required',
-            'ubicacion_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -146,7 +141,6 @@ class MovimientoController extends Controller
         $movimiento->estado = $request->estado;
         $movimiento->usuario_id = $request->usuario_id;
         $movimiento->activo_id = $request->activo_id;
-        $movimiento->ubicacion_id = $request->ubicacion_id;
         $movimiento->save();
 
         $data = [
@@ -200,10 +194,6 @@ class MovimientoController extends Controller
         
         if ($request->has('activo_id')){
             $movimiento->activo_id = $request->activo_id;
-        }
-        
-        if ($request->has('ubicacion_id')){
-            $movimiento->ubicacion_id = $request->ubicacion_id;
         }
         
         $movimiento->save();

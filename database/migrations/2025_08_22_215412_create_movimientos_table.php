@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
-            $table->enum('tipo_movimiento',['cambio de ubicacion','asignacion','baja'])->nullable();
+            $table->enum('tipo_movimiento',['traslado','asignacion','transferencia'])->nullable();
             $table->string('origen',80)->nullable();
             $table->string('destino',80)->nullable();
             $table->date('fecha')->nullable();
-            $table->enum('estado',['operable','nuevo','baja'])->nullable();
+            $table->enum('estado',['operando','deposito','baja'])->nullable();
             $table->string('descripcion',150)->nullable();
 
             $table->unsignedBigInteger('usuario_id');
@@ -25,9 +25,6 @@ return new class extends Migration
 
             $table->unsignedBigInteger('activo_id');
             $table->foreign('activo_id')->references('id')->on('activos')->onDelete('cascade');
-
-            $table->unsignedBigInteger('ubicacion_id');
-            $table->foreign('ubicacion_id')->references('id')->on('ubicaciones')->onDelete('cascade');
 
             $table->timestamps();
         });

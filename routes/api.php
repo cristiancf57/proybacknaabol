@@ -174,7 +174,7 @@ Route::controller(ComponenteController::class)->group(function (){
     Route::delete('/componentes/{id}', 'destroy');
 });
 
-// controladores de componentes
+// controladores de cargos
 Route::controller(CargoController::class)->group(function (){
     Route::get('/cargos', 'index');
     Route::post('/cargos', 'store');
@@ -182,4 +182,14 @@ Route::controller(CargoController::class)->group(function (){
     Route::put('/cargos/{id}', 'update');
     Route::patch('/cargos/{id}', 'updatePartial');
     Route::delete('/cargos/{id}', 'destroy');
+});
+
+// controladores de Movimientos
+Route::controller(MovimientoController::class)->group(function (){
+    Route::get('/movimientos', 'index');
+    Route::post('/movimientos', 'store');
+    Route::get('/movimientos/{id}', 'show');
+    Route::put('/movimientos/{id}', 'update');
+    Route::patch('/movimientos/{id}', 'updatePartial');
+    Route::delete('/movimientos/{id}', 'destroy');
 });

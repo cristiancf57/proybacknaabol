@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
 
         // craer usuarios admin
         $usuarioAdmin = User::factory()->create([
+            'ci' => '9166669',
             'nombre' => 'Cristian',
             'apellido' => 'Flores',
             'email' => 'humbertflores57@gmail.com',
@@ -72,12 +73,11 @@ class DatabaseSeeder extends Seeder
         \App\Models\Designacion::create([
             'estado' => 'activo',
             'usuario_id' => $usuarioAdmin->id,
-            'rol_id' => $administradorRole,
+            'role' => $administradorRole->id,
             'cargo_id' => $cargoDesarrollador->id,
             'fecha_inicio' => now(),
             'fecha_fin' => null
         ]);
 
-        
     }
 }

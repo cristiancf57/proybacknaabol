@@ -12,7 +12,4 @@ class Ubicacion extends Model
     protected $table = 'ubicaciones';
     protected $fillable = ['area','ubicacion','especificacion'];
 
-    public function movimientos():HasMany{
-        return $this->hasMany(Movimiento::class);
-    }
 }

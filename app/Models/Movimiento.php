@@ -11,7 +11,7 @@ class Movimiento extends Model
 {
     use HasFactory;
     protected $table = 'movimientos';
-    protected $fillable = ['tipo_movimiento','origen','destino','fecha','estado','descripcion','usuario_id','activo_id','ubicacion_id'];
+    protected $fillable = ['tipo_movimiento','origen','destino','fecha','estado','descripcion','usuario_id','activo_id'];
 
     public function usuario():BelongsTo{
         return $this->belongsTo(User::class);
@@ -19,10 +19,6 @@ class Movimiento extends Model
 
     public function activo():BelongsTo{
         return $this->belongsTo(Activo::class);
-    }
-
-    public function ubicacion():BelongsTo{
-        return $this->belongsTo(Ubicacion::class);
     }
 
 }
