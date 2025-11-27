@@ -73,12 +73,11 @@ class DatabaseSeeder extends Seeder
         \App\Models\Designacion::create([
             'estado' => 'activo',
             'usuario_id' => $usuarioAdmin->id,
-            'rol_id' => $administradorRole,
+            'role' => $administradorRole->id,
             'cargo_id' => $cargoDesarrollador->id,
             'fecha_inicio' => now(),
             'fecha_fin' => null
         ]);
 
-        
     }
 }

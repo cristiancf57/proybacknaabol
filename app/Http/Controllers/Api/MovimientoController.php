@@ -40,13 +40,11 @@ class MovimientoController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'tipo_movimiento' => 'required',
-            'oreigen' => 'required',
-            'destino' => 'required',
-            'estado' => 'required',
-            'usuario_id' => 'required',
-            'activo_id' => 'required',
-            'ubicacion_id' => 'required'
+            'tipo_movimiento' => 'required|string',
+            'oreigen' => 'required|string',
+            'destino' => 'required|string',
+            'usuario_id' => 'required|integer',
+            'activo_id' => 'required|integer',
         ]);
 
         if ($validator->fails()){
@@ -62,8 +60,8 @@ class MovimientoController extends Controller
             'tpo_movimiento' => $request->tpo_movimiento,
             'origen' => $request->origen,
             'destino' => $request->destino,
-            'fecha' => Carbon::now('America/La_Paz')->toDateString(),
-            'estado' => $request->estado,
+            'fecha' => $request->fecha->toDateString()?? Carbon::now('America/La_Paz')->toDateString(),
+            'estado' => $request->estado ??'nuevo',
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
             'activo_id' => $request->activo_id,
@@ -122,10 +120,8 @@ class MovimientoController extends Controller
             'tipo_movimiento' => 'required',
             'oreigen' => 'required',
             'destino' => 'required',
-            'estado' => 'required',
             'usuario_id' => 'required',
             'activo_id' => 'required',
-            'ubicacion_id' => 'required'
         ]);
 
         if ($validator->fails()){
@@ -145,7 +141,6 @@ class MovimientoController extends Controller
         $movimiento->estado = $request->estado;
         $movimiento->usuario_id = $request->usuario_id;
         $movimiento->activo_id = $request->activo_id;
-        $movimiento->ubicacion_id = $request->ubicacion_id;
         $movimiento->save();
 
         $data = [
@@ -199,10 +194,6 @@ class MovimientoController extends Controller
         
         if ($request->has('activo_id')){
             $movimiento->activo_id = $request->activo_id;
-        }
-        
-        if ($request->has('ubicacion_id')){
-            $movimiento->ubicacion_id = $request->ubicacion_id;
         }
         
         $movimiento->save();
