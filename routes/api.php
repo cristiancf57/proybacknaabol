@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MantenimientoController;
 use App\Http\Controllers\Api\RepuestoController;
 use App\Http\Controllers\Api\TareaController;
 use App\Http\Controllers\Api\UsuarioController;
+use App\Http\Controllers\MovimientoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 
@@ -182,4 +183,14 @@ Route::controller(CargoController::class)->group(function (){
     Route::put('/cargos/{id}', 'update');
     Route::patch('/cargos/{id}', 'updatePartial');
     Route::delete('/cargos/{id}', 'destroy');
+});
+
+// controladores de Movimientos
+Route::controller(MovimientoController::class)->group(function (){
+    Route::get('/movimientos', 'index');
+    Route::post('/movimientos', 'store');
+    Route::get('/movimientos/{id}', 'show');
+    Route::put('/movimientos/{id}', 'update');
+    Route::patch('/movimientos/{id}', 'updatePartial');
+    Route::delete('/movimientos/{id}', 'destroy');
 });

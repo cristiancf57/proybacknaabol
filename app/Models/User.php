@@ -26,7 +26,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $table = 'users';
-    protected $fillable = ['nombre','apellido','email','email_verified_at','telefono','perfil','username','password'];
+    protected $fillable = ['ci','nombre','apellido','email','email_verified_at','telefono','perfil','username','password'];
 
     public function designacion():HasMany{
         return $this->hasMany(Designacion::class);

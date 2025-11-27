@@ -60,6 +60,7 @@ class UsuarioController extends Controller
         }
 
         $usuario = User::create([
+            'ci' => $request->ci,
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
@@ -137,6 +138,7 @@ class UsuarioController extends Controller
         }
         
         // $usuario = User::find($id);
+        $usuario->ci = $request->ci;
         $usuario->nombre = $request->nombre;
         $usuario->apellido = $request->apellido;
         $usuario->email = $request->email;
@@ -167,6 +169,10 @@ class UsuarioController extends Controller
             return response()->json($data,404);
         }
         
+        if ($request->has('ci')){
+            $usuario->ci = $request->ci;
+        }
+
         if ($request->has('nombre')){
             $usuario->nombre = $request->nombre;
         }

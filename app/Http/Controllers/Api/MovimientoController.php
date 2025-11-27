@@ -67,7 +67,6 @@ class MovimientoController extends Controller
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
             'activo_id' => $request->activo_id,
-            'ubicacion_id' => $request->ubicacion_id
         ]);
         
         if (!$movimiento){
