@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MantenimientoController;
 use App\Http\Controllers\Api\RepuestoController;
 use App\Http\Controllers\Api\TareaController;
 use App\Http\Controllers\Api\UsuarioController;
+use App\Http\Controllers\Api\MovimientoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 
@@ -25,14 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // Usuarios - Solo admin puede gestionar
-    Route::middleware(['role:admin|administrador', 'permission:manage users'])->controller(UsuarioController::class)->group(function (){
-        Route::get('/usuarios', 'index');
-        Route::post('/usuarios', 'store');
-        Route::get('/usuarios/{id}', 'show');
-        Route::put('/usuarios/{id}', 'update');
-        Route::patch('/usuarios/{id}', 'updatePartial');
-        Route::delete('/usuarios/{id}', 'destroy');
-    });
+    // Route::middleware(['role:admin|administrador', 'permission:manage users'])->controller(UsuarioController::class)->group(function (){
+    //     Route::get('/usuarios', 'index');
+    //     Route::post('/usuarios', 'store');
+    //     Route::get('/usuarios/{id}', 'show');
+    //     Route::put('/usuarios/{id}', 'update');
+    //     Route::patch('/usuarios/{id}', 'updatePartial');
+    //     Route::delete('/usuarios/{id}', 'destroy');
+    // });
      // Rutas para gestión de roles de usuarios
     Route::prefix('users')->group(function () {
         Route::get('/', [UsuarioController::class, 'getUsersWithRoles']);
@@ -44,19 +45,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // Activos - Diferentes niveles de acceso
     Route::controller(ActivoController::class)->group(function (){
         // Ver activos - Múltiples roles pueden ver
-        Route::get('/activos', 'index')->middleware('role:admin|manager|user');
-        Route::get('/activos/{id}', 'show')->middleware('role:admin|manager|user');
-        Route::get('/activoscd/{codigo}', 'codig')->middleware('role:admin|manager|user');
-        Route::get('/estadisticas', 'getEstadisticas')->middleware('role:admin|manager|user');
+        // Route::get('/activos', 'index')->middleware('role:admin|manager|user');
+        // Route::get('/activos/{id}', 'show')->middleware('role:admin|manager|user');
+        // Route::get('/activoscd/{codigo}', 'codig')->middleware('role:admin|manager|user');
+        // Route::get('/estadisticas', 'getEstadisticas')->middleware('role:admin|manager|user');
 
         
         // Crear y editar - Solo admin y manager
-        Route::post('/activos', 'store')->middleware('role:admin|manager');
-        Route::put('/activos/{id}', 'update')->middleware('role:admin|manager');
-        Route::patch('/activos/{id}', 'updatePartial')->middleware('role:admin|manager');
+        // Route::post('/activos', 'store')->middleware('role:admin|manager');
+        // Route::put('/activos/{id}', 'update')->middleware('role:admin|manager');
+        // Route::patch('/activos/{id}', 'updatePartial')->middleware('role:admin|manager');
         
         // Eliminar - Solo admin
-        Route::delete('/activos/{id}', 'destroy')->middleware('role:admin');
+        // Route::delete('/activos/{id}', 'destroy')->middleware('role:admin');
         
         // Estadísticas - Solo admin y manager
         // Route::get('/estadisticas', 'getEstadisticas')->middleware('role:admin|manager');

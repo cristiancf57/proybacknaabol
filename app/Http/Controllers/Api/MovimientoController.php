@@ -40,11 +40,11 @@ class MovimientoController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(),[
-            'tipo_movimiento' => 'required',
-            'oreigen' => 'required',
-            'destino' => 'required',
-            'usuario_id' => 'required',
-            'activo_id' => 'required',
+            'tipo_movimiento' => 'required|string',
+            'oreigen' => 'required|string',
+            'destino' => 'required|string',
+            'usuario_id' => 'required|integer',
+            'activo_id' => 'required|integer',
         ]);
 
         if ($validator->fails()){
@@ -60,7 +60,7 @@ class MovimientoController extends Controller
             'tpo_movimiento' => $request->tpo_movimiento,
             'origen' => $request->origen,
             'destino' => $request->destino,
-            'fecha' => Carbon::now('America/La_Paz')->toDateString(),
+            'fecha' => $request->fecha->toDateString()?? Carbon::now('America/La_Paz')->toDateString(),
             'estado' => $request->estado ??'nuevo',
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
